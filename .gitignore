@@ -1,0 +1,23 @@
+# Environment
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Cache (FRED vintage data)
+.cache/
+
+# Generated outputs (use samples/ for committed examples)
+outputs/*
+!outputs/.gitkeep
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
