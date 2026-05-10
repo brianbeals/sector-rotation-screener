@@ -10,8 +10,9 @@ Outputs an Excel workbook and a single-page HTML dashboard.
 
 Every Sunday afternoon ET, GitHub Actions runs the screener, asks Claude for a brief plain-language commentary on the output, and commits both the dashboard and the commentary back to this repo. The disclaimer is in the README, in the commentary, and at the top of every weekly file.
 
+- **[Live home ↗](https://sector.brianbeals.com/)** — branded landing page
 - **[This week's dashboard ↗](https://sector.brianbeals.com/weekly/latest/dashboard.html)**
-- **[This week's commentary ↗](weekly/latest/summary.md)** (Claude's reading + disclaimer)
+- **[This week's commentary ↗](https://sector.brianbeals.com/weekly/latest/summary.html)** (Claude's reading + disclaimer)
 - **[Past runs](weekly/history/)** — date-stamped archive
 
 If the weekly links 404, the first scheduled run hasn't happened yet. Static reference sample: [`samples/sector_screen_sample.html`](samples/sector_screen_sample.html) ([live](https://sector.brianbeals.com/samples/sector_screen_sample.html)).

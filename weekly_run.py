@@ -21,6 +21,7 @@ from datetime import date
 from pathlib import Path
 
 import anthropic
+import markdown as md_lib
 
 import config
 import screener
@@ -161,7 +162,7 @@ said.
 ## Latest
 
 - **[Dashboard](latest/dashboard.html)** — score table, seasonality heatmap, RS bars, equity curve, cycle context
-- **[Commentary](latest/summary.md)** — Claude's plain-language reading of the week
+- **[Commentary](latest/summary.html)** — Claude's plain-language reading of the week (or [as markdown](latest/summary.md))
 - Last run: {today}
 
 ## Disclaimer
@@ -172,6 +173,265 @@ said.
 
 Each week's output is archived in [`history/`](history/), date-stamped. The latest is mirrored to `latest/`.
 """
+
+
+# ---------------------------------------------------------------------------
+# Brand-styled HTML pages for sector.brianbeals.com
+# ---------------------------------------------------------------------------
+
+PAGE_SHELL = """<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{title} | Brian Beals</title>
+  <meta name="description" content="{description}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600&display=swap" rel="stylesheet">
+  <style>
+    :root {{
+      --navy: #1E3A5F;
+      --blue: #2E86C1;
+      --bg: #F4F6F9;
+      --text: #1A1A2A;
+      --muted: #6B7280;
+      --card: #FFFFFF;
+      --warn-bg: #FEF3F2;
+      --warn-border: #C0392B;
+    }}
+    * {{ box-sizing: border-box; }}
+    html, body {{ margin: 0; padding: 0; }}
+    body {{
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(at 25% 20%, rgba(46,134,193,0.12) 0, transparent 50%),
+        radial-gradient(at 75% 80%, rgba(30,58,95,0.10) 0, transparent 50%),
+        var(--bg);
+      line-height: 1.6;
+    }}
+    h1, h2, h3 {{
+      font-family: "Source Serif 4", Georgia, serif;
+      color: var(--navy);
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }}
+    h1 {{ font-size: 2.5rem; margin: 0 0 1rem; }}
+    h2 {{ font-size: 1.6rem; margin: 2.5rem 0 1rem; }}
+    h3 {{ font-size: 1.15rem; margin: 1.5rem 0 0.5rem; }}
+    p {{ margin: 0 0 1rem; }}
+    a {{ color: var(--blue); text-underline-offset: 4px; }}
+    a:hover {{ text-decoration: none; }}
+    header.site {{ padding: 2rem 1.5rem 0.5rem; }}
+    header.site nav {{
+      max-width: 42rem;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.95rem;
+    }}
+    header.site nav .brand {{
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 600;
+    }}
+    header.site nav .links {{ display: flex; gap: 1.5rem; }}
+    header.site nav .links a {{ color: var(--text); text-decoration: none; }}
+    header.site nav .links a:hover {{ text-decoration: underline; }}
+    main {{ max-width: 42rem; margin: 0 auto; padding: 3rem 1.5rem 2rem; }}
+    .subtitle {{ font-size: 1.2rem; color: var(--muted); margin-bottom: 2rem; }}
+    .disclaimer {{
+      background: var(--warn-bg);
+      border-left: 4px solid var(--warn-border);
+      padding: 1rem 1.25rem;
+      border-radius: 4px;
+      font-size: 0.95rem;
+      margin: 2rem 0;
+      color: var(--text);
+    }}
+    .disclaimer strong {{ color: var(--warn-border); }}
+    .cards {{
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }}
+    @media (max-width: 600px) {{ .cards {{ grid-template-columns: 1fr; }} }}
+    .card {{
+      background: var(--card);
+      border-radius: 8px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      text-decoration: none;
+      color: var(--text);
+      display: block;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }}
+    .card:hover {{
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      text-decoration: none;
+    }}
+    .card h3 {{ color: var(--navy); margin-top: 0; }}
+    .card p {{ color: var(--muted); margin-bottom: 0; font-size: 0.95rem; }}
+    .back {{
+      display: inline-block;
+      margin-bottom: 1.5rem;
+      color: var(--blue);
+      text-decoration: none;
+      font-size: 0.95rem;
+    }}
+    .back:hover {{ text-decoration: underline; }}
+    .commentary {{ font-size: 1.02rem; }}
+    .commentary p {{ margin: 0 0 1rem; }}
+    .commentary h2 {{ font-size: 1.4rem; margin: 2rem 0 0.75rem; }}
+    .commentary strong {{ color: var(--navy); }}
+    .attribution {{
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-style: italic;
+      margin-top: 2rem;
+    }}
+    .attribution a {{ color: var(--muted); }}
+    footer.site {{
+      max-width: 42rem;
+      margin: 2rem auto;
+      padding: 1.5rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+      text-align: center;
+    }}
+    footer.site a {{ color: inherit; text-underline-offset: 3px; }}
+    code {{
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      background: rgba(30,58,95,0.06);
+      padding: 0.1em 0.4em;
+      border-radius: 3px;
+      font-size: 0.92em;
+    }}
+    hr {{ border: none; border-top: 1px solid rgba(30,58,95,0.12); margin: 2rem 0; }}
+  </style>
+</head>
+<body>
+  <header class="site">
+    <nav>
+      <a href="https://brianbeals.com/" class="brand">Brian Beals</a>
+      <div class="links">
+        <a href="https://brianbeals.com/about">About</a>
+        <a href="https://brianbeals.com/contact">Contact</a>
+      </div>
+    </nav>
+  </header>
+  <main>
+{content}
+  </main>
+  <footer class="site">
+    © {year} Brian Beals · <a href="https://brianbeals.com">brianbeals.com</a> · <a href="https://github.com/brianbeals/sector-rotation-screener">github</a>
+  </footer>
+</body>
+</html>
+"""
+
+
+_DISCLAIMER_HTML = (
+    '<div class="disclaimer">'
+    '<strong>⚠️ Not financial advice.</strong> '
+    "This is auto-generated each week by Claude (Anthropic's AI model). "
+    "Brian Beals is not a registered investment advisor, and Claude is not "
+    "licensed to provide personalized financial advice. The screener is a "
+    "research and methodology demo, not a recommendation system. Past "
+    "performance does not predict future results. Do your own research before "
+    "making any investment decisions."
+    "</div>"
+)
+
+
+def _wrap_in_page(title: str, description: str, content: str, year: int) -> str:
+    return PAGE_SHELL.format(
+        title=title,
+        description=description,
+        content=content,
+        year=year,
+    )
+
+
+def _build_index_html(today: str) -> str:
+    pretty = date.fromisoformat(today).strftime("%B %d, %Y")
+    year = date.fromisoformat(today).year
+    content = f"""    <h1>Sector Rotation Screen</h1>
+    <p class="subtitle">A weekly methodology demo. Open source, transparent rules.</p>
+
+    <p>Every Sunday afternoon, GitHub Actions runs an 11-SPDR-ETF screen against three signals — seasonality, economic-cycle fit, and relative strength vs SPY — runs a 15-year backtest, and asks Claude for a brief commentary on what the output said.</p>
+
+    {_DISCLAIMER_HTML}
+
+    <h2>This week — {pretty}</h2>
+    <div class="cards">
+      <a href="weekly/latest/dashboard.html" class="card">
+        <h3>Dashboard ↗</h3>
+        <p>Score table, seasonality heatmap, RS bars, equity curve, cycle context.</p>
+      </a>
+      <a href="weekly/latest/summary.html" class="card">
+        <h3>Commentary ↗</h3>
+        <p>Claude's plain-language reading of this week's screen.</p>
+      </a>
+    </div>
+
+    <h2>Why this exists</h2>
+    <p>Sector rotation isn't an investment thesis I'm pitching. It's a testbed for the kind of analytical workflow I'd build for a CIO or CDO who wants to evaluate macro exposures across business units: ingest data, score against multiple signals, output something humans can read, backtest the methodology before trusting it.</p>
+    <p>The same pattern works for portfolio companies, supply-chain risk, customer-segment health, or any question where "let's score it against multiple signals and see how that would have played out historically" beats gut feel.</p>
+
+    <h2>Open source</h2>
+    <p>The screener, methodology, weekly automation, and license live at <a href="https://github.com/brianbeals/sector-rotation-screener">github.com/brianbeals/sector-rotation-screener</a>.</p>
+
+    <h2>Past runs</h2>
+    <p><a href="weekly/history/">Browse the date-stamped archive →</a></p>
+"""
+    return _wrap_in_page(
+        title="Sector Rotation Screen",
+        description="Weekly screen of 11 SPDR sector ETFs with composite scoring and Claude commentary. Open-source methodology demo by Brian Beals.",
+        content=content,
+        year=year,
+    )
+
+
+def _build_summary_html(today: str, commentary_md: str) -> str:
+    pretty = date.fromisoformat(today).strftime("%B %d, %Y")
+    year = date.fromisoformat(today).year
+    # Render Claude's commentary (markdown) to HTML.
+    rendered = md_lib.markdown(
+        commentary_md,
+        extensions=["extra", "sane_lists"],
+    )
+    content = f"""    <a href="../../" class="back">← Sector Rotation Screen home</a>
+
+    <h1>Weekly Commentary — {pretty}</h1>
+
+    {_DISCLAIMER_HTML}
+
+    <p><a href="dashboard.html">View this week's dashboard ↗</a></p>
+
+    <hr>
+
+    <div class="commentary">
+{rendered}
+    </div>
+
+    <hr>
+
+    <p class="attribution">
+      By <a href="https://brianbeals.com">Brian Beals</a>. Methodology and code: <a href="https://github.com/brianbeals/sector-rotation-screener">github.com/brianbeals/sector-rotation-screener</a>. Commentary generated by Claude ({CLAUDE_MODEL}).
+    </p>
+"""
+    return _wrap_in_page(
+        title=f"Weekly Commentary — {pretty}",
+        description=f"Claude's commentary on the {pretty} sector rotation screen output. Not financial advice.",
+        content=content,
+        year=year,
+    )
 
 
 def main():
@@ -208,8 +468,10 @@ def main():
             "scores are unchanged."
         )
 
-    # 4. Write summary markdown
+    # 4. Build all the deliverables
     summary_md = _build_summary_md(today, commentary)
+    summary_html = _build_summary_html(today, commentary)
+    index_html = _build_index_html(today)
 
     # 5. Publish to weekly/latest/ and weekly/history/<today>/
     repo_root = Path(__file__).parent
@@ -222,11 +484,17 @@ def main():
     shutil.copy(html_path, history / "dashboard.html")
     (latest / "summary.md").write_text(summary_md)
     (history / "summary.md").write_text(summary_md)
+    (latest / "summary.html").write_text(summary_html)
+    (history / "summary.html").write_text(summary_html)
 
-    # 6. Refresh the weekly index
+    # 6. Refresh the weekly index (markdown, for github.com viewing)
     (repo_root / "weekly" / "README.md").write_text(_build_weekly_index(today))
 
+    # 7. Refresh the styled landing page at the repo root (sector.brianbeals.com/)
+    (repo_root / "index.html").write_text(index_html)
+
     print(f"Published weekly artifacts to {latest} and {history}")
+    print(f"Refreshed landing page: {repo_root / 'index.html'}")
 
 
 if __name__ == "__main__":

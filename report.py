@@ -339,6 +339,8 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
 <body>
 <div class="wrap">
 
+<a href="/" style="display:inline-block; color:#2E86C1; text-decoration:none; margin: 12px 0 4px; font-size: 14px;">← Sector Rotation Screen home</a>
+
 <header class="bar">
   <h1>Sector Rotation Screen</h1>
   <div class="meta">
