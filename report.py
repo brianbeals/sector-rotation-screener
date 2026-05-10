@@ -481,8 +481,9 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
 </div>
 
 <footer>
-  Prepared by Brian Beals · {{ run_date_long }}<br>
-  Generated {{ generated_at }} · Price data through {{ prices_through }} · FRED data vintage {{ fred_vintage }}
+  Prepared by <a href="https://brianbeals.com" target="_blank" style="color:inherit;">Brian Beals</a> · {{ run_date_long }}<br>
+  Price data through {{ prices_through }} · FRED vintage {{ fred_vintage }}<br>
+  © {{ current_year }} Brian Beals · <a href="https://github.com/brianbeals/sector-rotation-screener" target="_blank" style="color:inherit;">github.com/brianbeals/sector-rotation-screener</a>
 </footer>
 
 </div>
@@ -714,6 +715,7 @@ def write_html(rows: List[Dict],
     html = tpl.render(
         run_date      = date.today().strftime("%B %d, %Y"),
         run_date_long = date.today().strftime("%B %d, %Y"),
+        current_year  = date.today().year,
         generated_at  = vintage_info.get("generated_at", ""),
         prices_through= vintage_info.get("prices_through", ""),
         fred_vintage  = vintage_info.get("fred_vintage", ""),
