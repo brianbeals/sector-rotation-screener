@@ -8,7 +8,9 @@ Outputs an Excel workbook and a single-page HTML dashboard.
 
 ## Sample output
 
-[`samples/sector_screen_sample.html`](samples/sector_screen_sample.html) is a recent run showing the score table, seasonality heatmap, 3-month relative-strength bars, equity-curve chart, and cycle context. Open it in a browser to see what the screener produces.
+**[View the live dashboard →](https://brianbeals.github.io/sector-rotation-screener/samples/sector_screen_sample.html)**
+
+A recent run showing the score table, seasonality heatmap, 3-month relative-strength bars, equity-curve chart, and cycle context. Source HTML: [`samples/sector_screen_sample.html`](samples/sector_screen_sample.html).
 
 ## Why this exists
 
