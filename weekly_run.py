@@ -416,11 +416,11 @@ def _build_history_index_html(history_root: Path) -> str:
                 pretty = date.fromisoformat(run_date).strftime("%B %d, %Y")
             except ValueError:
                 pretty = run_date
-            rows.append(f"""      <a href="{run_date}/dashboard.html" class="card">
+            rows.append(f"""      <div class="card">
         <h3>{pretty}</h3>
         <p>Dashboard, commentary, and disclaimer for the {pretty} run.</p>
-        <p style="margin-top:0.5rem; font-size:0.9rem;"><span style="color:var(--blue);">View dashboard ↗</span> · <a href="{run_date}/summary.html" style="color:var(--blue);">View commentary ↗</a></p>
-      </a>""")
+        <p style="margin-top:0.75rem; font-size:0.9rem;"><a href="{run_date}/dashboard.html" style="color:var(--blue); text-decoration:none;">View dashboard ↗</a> &nbsp;·&nbsp; <a href="{run_date}/summary.html" style="color:var(--blue); text-decoration:none;">View commentary ↗</a></p>
+      </div>""")
         cards_html = "\n".join(rows)
         body = f"""    <a href="../../" class="back">← Sector Rotation Screen home</a>
 
