@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Weekly Commentary — May 10, 2026 | Brian Beals</title>
-  <meta name="description" content="Anthropic's Claude commentary on the May 10, 2026 sector rotation screen output. Not financial advice.">
+  <title>Past runs | Brian Beals</title>
+  <meta name="description" content="Date-stamped archive of every weekly sector rotation screen run, with dashboards and AI commentary.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600&display=swap" rel="stylesheet">
@@ -147,31 +147,16 @@
   <main>
     <a href="../../" class="back">← Sector Rotation Screen home</a>
 
-    <h1>Weekly Commentary — May 10, 2026</h1>
+    <h1>Past runs</h1>
+    <p class="subtitle">Every weekly run, date-stamped. The latest is also mirrored at <a href="../latest/dashboard.html">weekly/latest/</a>.</p>
 
-    <div class="disclaimer"><strong>⚠️ Not financial advice.</strong> This is auto-generated each week by Anthropic's Claude (an AI model). Brian Beals is not a registered investment advisor, and Anthropic's Claude is not licensed to provide personalized financial advice. The screener is a research and methodology demo, not a recommendation system. Past performance does not predict future results. Do your own research before making any investment decisions.</div>
-
-    <p><a href="dashboard.html">View this week's dashboard ↗</a></p>
-
-    <hr>
-
-    <div class="commentary">
-<h2>What the screen said this week</h2>
-<p>The screener classified the current environment as <strong>mid-cycle</strong>, based on industrial production (INDPRO) growing year-over-year at +0.7%—above zero but below 4.0%—and a positive slope (+0.49) indicating steady expansion. Mid-cycle phases typically see the economy past early recovery but not yet overheating. Under this rule set, two sectors received <strong>Buy</strong> signals (composite ≥ 65): <strong>Technology (XLK)</strong> scored 91.3, driven by maximum cycle fit (100.0), strong relative strength (93.3, +17.43% over three months), and favorable seasonality (80.0). <strong>Communications (XLC)</strong> scored 65.5, also with maximum cycle fit and high seasonality (86.6), though its relative strength was weaker (23.7) and its three-month performance negative (-5.76%). The seasonality component for XLC carries a "thin sample" warning, meaning fewer historical data points inform that score.</p>
-<p>Four sectors landed in <strong>Avoid</strong> territory (composite ≤ 40): <strong>Consumer Staples (XLP)</strong>, <strong>Utilities (XLU)</strong>, <strong>Financials (XLF)</strong>, and <strong>Healthcare (XLV)</strong>. All four shared low cycle-fit scores (35.0 for the first three) and weak relative strength. Healthcare sits at the bottom with a composite of 32.5, combining a 35.0 cycle score with the weakest relative strength (7.6) and a three-month decline of -15.74%, despite above-average seasonality (63.1). The seven remaining sectors clustered in the middle with <strong>Hold</strong> signals.</p>
-<h2>Things worth noticing</h2>
-<p><strong>Healthcare (XLV)</strong> presents an interesting disconnect: its seasonality component scored 63.1—higher than six other sectors—yet it ranked last overall. This illustrates how the 40% relative-strength weight can override favorable seasonal patterns when recent price action is sharply negative. Similarly, <strong>Communications (XLC)</strong> earned a Buy signal despite negative three-month returns, because its 100.0 cycle fit and 86.6 seasonality (weighted 60% combined) offset the poor momentum reading. These cases highlight that the composite is a mechanical blend, not a judgment about which factor "matters more."</p>
-<p>The <strong>thin-sample warning</strong> on XLC's seasonality is worth understanding: Communications is a newer GICS sector (carved out of Technology and Telecom in 2018), so any seasonality analysis has fewer years of history than older sectors. The screen flags this so users know the 86.6 score rests on less data than, say, Technology's 80.0. </p>
-<p>All sectors with <strong>Avoid</strong> signals share weak relative strength (ranging from 7.6 to 31.0) and below-average cycle fit, even though some—like Healthcare and Utilities—showed seasonality scores above 57. This week's output suggests the relative-strength and cycle components aligned to penalize defensive sectors, while growth-oriented Technology benefited from strength across all three factors.</p>
-<h2>Methodology reminder</h2>
-<p>The composite score is calculated as <strong>(0.30 × seasonality) + (0.30 × cycle fit) + (0.40 × relative strength)</strong>. The backtest uses FRED ALFRED vintage data to prevent lookahead bias, ensuring that only information available on each historical date informed signals. The -370.66 percentage-point underperformance versus SPY over fifteen years is a property of this particular rule set and cost assumption, not a prediction of future results.</p>
+    <div class="cards" style="grid-template-columns: 1fr;">
+      <a href="2026-05-10/dashboard.html" class="card">
+        <h3>May 10, 2026</h3>
+        <p>Dashboard, commentary, and disclaimer for the May 10, 2026 run.</p>
+        <p style="margin-top:0.5rem; font-size:0.9rem;"><span style="color:var(--blue);">View dashboard ↗</span> · <a href="2026-05-10/summary.html" style="color:var(--blue);">View commentary ↗</a></p>
+      </a>
     </div>
-
-    <hr>
-
-    <p class="attribution">
-      By <a href="https://brianbeals.com">Brian Beals</a>. Methodology and code: <a href="https://github.com/brianbeals/sector-rotation-screener">github.com/brianbeals/sector-rotation-screener</a>. Commentary generated by Anthropic's Claude (claude-sonnet-4-5).
-    </p>
 
   </main>
   <footer class="site">

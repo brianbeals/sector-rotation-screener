@@ -6,27 +6,23 @@
 
 ---
 
-# Weekly sector-rotation screen commentary: 2026-05-10
-
 ## What the screen said this week
 
-The screen classified the macro environment as **mid-cycle** based on industrial production (INDPRO) growing +0.7% year-over-year—within the 0–4% band the ruleset associates with steady expansion—and a positive curve slope of +0.49. Under this methodology's framework, mid-cycle conditions typically favor cyclical and growth-oriented sectors.
+The screener classified the current environment as **mid-cycle**, based on industrial production (INDPRO) growing year-over-year at +0.7%—above zero but below 4.0%—and a positive slope (+0.49) indicating steady expansion. Mid-cycle phases typically see the economy past early recovery but not yet overheating. Under this rule set, two sectors received **Buy** signals (composite ≥ 65): **Technology (XLK)** scored 91.3, driven by maximum cycle fit (100.0), strong relative strength (93.3, +17.43% over three months), and favorable seasonality (80.0). **Communications (XLC)** scored 65.5, also with maximum cycle fit and high seasonality (86.6), though its relative strength was weaker (23.7) and its three-month performance negative (-5.76%). The seasonality component for XLC carries a "thin sample" warning, meaning fewer historical data points inform that score.
 
-**Technology (XLK)** scored highest with a composite of 91.3, earning a "Buy" signal. That score reflected maximum cycle-fit points (100.0), strong relative strength (93.3), and solid seasonality (80.0). The sector's 3-month relative strength stood at +17.43%, meaning it outperformed the benchmark by that margin recently. **Communications (XLC)** also cleared the Buy threshold at 65.5, though its seasonality component carried a "thin sample" warning and its recent relative strength was negative (-5.76%). 
-
-Four sectors fell into "Avoid" territory (composite ≤ 40): **Consumer Staples, Utilities, Financials, and Healthcare**. All four posted weak relative strength scores and lagged the benchmark substantially over three months, with Healthcare's -15.74% three-month RS the weakest in the list. Financials scored just 10.3 on relative strength despite a neutral 50.0 cycle fit.
+Four sectors landed in **Avoid** territory (composite ≤ 40): **Consumer Staples (XLP)**, **Utilities (XLU)**, **Financials (XLF)**, and **Healthcare (XLV)**. All four shared low cycle-fit scores (35.0 for the first three) and weak relative strength. Healthcare sits at the bottom with a composite of 32.5, combining a 35.0 cycle score with the weakest relative strength (7.6) and a three-month decline of -15.74%, despite above-average seasonality (63.1). The seven remaining sectors clustered in the middle with **Hold** signals.
 
 ## Things worth noticing
 
-**Communications (XLC)** illustrates a scenario where cycle fit and seasonality alone can push a sector above the Buy threshold even when recent price momentum is negative. Its 100.0 cycle score and 86.6 seasonality score outweighed a 23.7 relative-strength reading. The "thin sample" flag is a reminder that this sector's ETF has a shorter history than others, so the seasonality pattern rests on fewer observations.
+**Healthcare (XLV)** presents an interesting disconnect: its seasonality component scored 63.1—higher than six other sectors—yet it ranked last overall. This illustrates how the 40% relative-strength weight can override favorable seasonal patterns when recent price action is sharply negative. Similarly, **Communications (XLC)** earned a Buy signal despite negative three-month returns, because its 100.0 cycle fit and 86.6 seasonality (weighted 60% combined) offset the poor momentum reading. These cases highlight that the composite is a mechanical blend, not a judgment about which factor "matters more."
 
-**Financials (XLF)** present the opposite pattern: a 50.0 cycle fit (neutral for mid-cycle) was overwhelmed by a 10.3 relative-strength score, the second-lowest in the table. This shows how the 40% RS weighting can drag a composite down when momentum diverges sharply from the cycle template. Similarly, **Healthcare (XLV)** scored 63.1 on seasonality—higher than Technology—yet landed in Avoid due to very weak momentum.
+The **thin-sample warning** on XLC's seasonality is worth understanding: Communications is a newer GICS sector (carved out of Technology and Telecom in 2018), so any seasonality analysis has fewer years of history than older sectors. The screen flags this so users know the 86.6 score rests on less data than, say, Technology's 80.0. 
 
-The backtest result is stark: over fifteen years, this rule set returned +224.93% versus +595.59% for SPY after accounting for 10 basis points of trading cost per leg. That underperformance is a property of these particular thresholds, weights, and rebalance logic; it does not imply sector rotation as a concept fails, only that this specific implementation lagged buy-and-hold in the sample period tested.
+All sectors with **Avoid** signals share weak relative strength (ranging from 7.6 to 31.0) and below-average cycle fit, even though some—like Healthcare and Utilities—showed seasonality scores above 57. This week's output suggests the relative-strength and cycle components aligned to penalize defensive sectors, while growth-oriented Technology benefited from strength across all three factors.
 
 ## Methodology reminder
 
-The composite score is a weighted sum: 30% seasonality, 30% cycle fit, and 40% relative strength. Backtest integrity is preserved using FRED ALFRED vintage macroeconomic data, ensuring each historical signal reflects only information available at the time. The backtest statistic describes how this ruleset performed historically; it is not a forecast of future results.
+The composite score is calculated as **(0.30 × seasonality) + (0.30 × cycle fit) + (0.40 × relative strength)**. The backtest uses FRED ALFRED vintage data to prevent lookahead bias, ensuring that only information available on each historical date informed signals. The -370.66 percentage-point underperformance versus SPY over fifteen years is a property of this particular rule set and cost assumption, not a prediction of future results.
 
 ---
 
