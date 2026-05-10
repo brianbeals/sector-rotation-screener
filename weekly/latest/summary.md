@@ -1,31 +1,31 @@
 # Weekly Sector Rotation Commentary — 2026-05-10
 
-**⚠️ Not financial advice.** This commentary is auto-generated each week by Claude (Anthropic's AI model). Brian Beals is not a registered investment advisor, and Claude is not licensed to provide personalized financial advice. The screener is a research and methodology demo, not a recommendation system. Past performance does not predict future results. Do your own research before making any investment decisions.
+**⚠️ Not financial advice.** This commentary is auto-generated each week by Anthropic's Claude (an AI model). Brian Beals is not a registered investment advisor, and Anthropic's Claude is not licensed to provide personalized financial advice. The screener is a research and methodology demo, not a recommendation system. Past performance does not predict future results. Do your own research before making any investment decisions.
 
 [View the dashboard ↗](dashboard.html)
 
 ---
 
+# Sector Rotation Screen — 2026-05-10
+
 ## What the screen said this week
 
-The screener classified the economy as **mid-cycle** based on industrial production growing +0.7% year-over-year—positive but below 4%—with an upward-sloping trend (+0.49). That combination typically reflects steady expansion without overheating. Under this rule set, mid-cycle assigns high cycle-fit scores to economically sensitive sectors like Technology and Communications, and lower scores to defensive names.
+The screen classified the current environment as **mid-cycle**, pointing to industrial production (INDPRO) growing at +0.7% year-over-year—positive but modest—with an upward-sloping trend (+0.49). That combination signals steady expansion rather than either early recovery or late-cycle overheating. Under this rule set's cycle logic, mid-cycle environments assign maximum weight to growth-sensitive sectors and reduce weight on defensive plays.
 
-**Technology (XLK)** topped the composite at 91.3, earning a Buy signal. It scored perfectly on cycle fit (100.0), received strong marks for relative strength (93.3, +17.43% over three months), and registered favorable seasonality (80.0). **Communications (XLC)** also crossed the Buy threshold at 65.5, driven by maximum cycle fit and very high seasonality (86.6), though its relative strength was weaker (23.7, -5.76% trailing three months) and carries a thin-sample warning for the seasonality component.
-
-Four sectors fell into Avoid territory (composite ≤ 40): **Consumer Staples, Utilities, Financials, and Healthcare**. All four showed poor recent relative strength, with Healthcare posting the weakest three-month performance at -15.74%. The mid-cycle classification penalized defensive sectors (Staples, Utilities, Healthcare) with lower cycle-fit scores (35.0), while Financials' Avoid signal stemmed primarily from its trailing RS rank of 10.3.
+**Technology (XLK)** scored highest at 91.3, earning a "Buy" signal. It achieved perfect marks on cycle fit (100.0) and strong relative strength (93.3), with three-month RS of +17.43%. **Communications (XLC)** also cleared the 65 threshold for a "Buy" signal, though the screen flagged its seasonality component as derived from a thin sample. Four sectors landed in "Avoid" territory (composite ≤ 40): **Consumer Staples, Utilities, Financials, and Healthcare**. Notably, Healthcare posted the weakest three-month relative strength at -15.74%, while Financials showed the lowest cycle-fit-adjusted RS at 10.3.
 
 ## Things worth noticing
 
-**Communications presents an unusual profile**: it qualified for a Buy signal thanks to strong seasonality and perfect cycle alignment, yet its three-month relative strength is negative (-5.76%) and its RS component score sits at only 23.7. This illustrates how the composite can aggregate conflicting inputs—recent price underperformance versus favorable macro and calendar patterns. The methodology also flags Communications seasonality as based on a "thin sample," a reminder that shorter ETF histories reduce the statistical confidence of calendar effects.
+**Energy (XLE)** sits almost exactly at the midpoint (composite 50.4) despite a modest cycle fit score of 50.0 and negative three-month RS of -1.81%. Its seasonality score (47.2) is below average, illustrating how the 30/30/40 composite weighting can push a sector into the Hold bucket even when no single input is particularly strong. Meanwhile, **Real Estate (XLRE)** earned a Hold with a composite of 53.4, supported by above-average seasonality (67.9) but dragged down by lukewarm relative strength (45.1, RS3m -0.62%).
 
-**Real Estate and Energy** landed near the middle (53.4 and 50.4) with Hold signals. Both received mid-range cycle scores (50.0), meaning the mid-cycle phase neither favors nor penalizes them under this rule set. Their composite rankings hinged on the interplay of modest seasonality and relative strength; neither broke above the 65 Buy threshold or fell below the 40 Avoid line.
+The backtest result is worth highlighting for transparency: over the 15-year window and inclusive of 10-basis-point trading costs, this strategy returned +224.93% versus SPY's +595.59%. The strategy underperformed the benchmark. That historical result reflects the interaction of these particular rules, weights, and rebalance triggers during that specific period—it is not a forecast of how the screen will behave going forward.
 
-The **backtest disclosure** is particularly notable this week: over the 15-year window, the strategy returned +224.93% versus +595.59% for SPY, meaning this rule set underperformed buy-and-hold by a wide margin after accounting for 10 basis points per trade. That historical result is a property of these specific thresholds, weights, and rebalancing logic—not a statement about sector rotation in general or the future utility of the screen.
+**Healthcare's** placement in the Avoid bucket is driven almost entirely by poor recent relative strength, even though its seasonality score (63.1) would ordinarily be constructive. This highlights how the 40% RS weighting can overwhelm other factors when momentum diverges sharply.
 
 ## Methodology reminder
 
-The composite score is a weighted sum: 30% seasonality + 30% cycle fit + 40% relative strength. Signals trigger at fixed thresholds (Buy ≥ 65, Avoid ≤ 40). The backtest controls for lookahead bias by using FRED ALFRED point-in-time data vintages, ensuring macro indicators reflect only information available on each historical decision date. Performance figures describe how *this particular rule set* behaved in the past, not how markets or sectors will behave going forward.
+The composite score combines seasonality (30%), business-cycle fit (30%), and trailing relative strength (40%). Lookahead bias in the backtest is controlled using FRED ALFRED vintage data, so macro indicators reflect only information that would have been available at each historical decision point. The backtest statistic describes the performance of this particular rule set in the past; it is not predictive.
 
 ---
 
-*By [Brian Beals](https://brianbeals.com). Methodology and code: [github.com/brianbeals/sector-rotation-screener](https://github.com/brianbeals/sector-rotation-screener). Commentary generated by Claude (claude-sonnet-4-5). © 2026 Brian Beals.*
+*By [Brian Beals](https://brianbeals.com). Methodology and code: [github.com/brianbeals/sector-rotation-screener](https://github.com/brianbeals/sector-rotation-screener). Commentary generated by Anthropic's Claude (claude-sonnet-4-5). © 2026 Brian Beals.*
