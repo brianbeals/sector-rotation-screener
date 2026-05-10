@@ -6,11 +6,15 @@ Outputs an Excel workbook and a single-page HTML dashboard.
 
 > **Not financial advice.** This is research code I built for myself. It's published as a methodology demo, not a recommendation. Past performance does not indicate future results. Don't trade on this without doing your own homework.
 
-## Sample output
+## Live output
 
-**[View the live dashboard →](https://brianbeals.github.io/sector-rotation-screener/samples/sector_screen_sample.html)**
+Every Sunday afternoon ET, GitHub Actions runs the screener, asks Claude for a brief plain-language commentary on the output, and commits both the dashboard and the commentary back to this repo. The disclaimer is in the README, in the commentary, and at the top of every weekly file.
 
-A recent run showing the score table, seasonality heatmap, 3-month relative-strength bars, equity-curve chart, and cycle context. Source HTML: [`samples/sector_screen_sample.html`](samples/sector_screen_sample.html).
+- **[This week's dashboard ↗](https://brianbeals.github.io/sector-rotation-screener/weekly/latest/dashboard.html)**
+- **[This week's commentary ↗](weekly/latest/summary.md)** (Claude's reading + disclaimer)
+- **[Past runs](weekly/history/)** — date-stamped archive
+
+If the weekly links 404, the first scheduled run hasn't happened yet. Static reference sample: [`samples/sector_screen_sample.html`](samples/sector_screen_sample.html) ([live](https://brianbeals.github.io/sector-rotation-screener/samples/sector_screen_sample.html)).
 
 ## Why this exists
 
@@ -51,6 +55,8 @@ The Excel workbook has three sheets: **Sector Screen**, **Cycle Context**, and *
 | `report.py`   | Excel + HTML writers, equity-curve SVG, banners                        |
 | `screener.py` | Main entry. Orchestrates the whole run.                                |
 | `drilldown.py`| Per-sector drill-down for top-holdings analysis                        |
+| `weekly_run.py` | Wraps `screener.py`, calls Claude for commentary, publishes to `weekly/` |
+| `.github/workflows/weekly.yml` | GitHub Actions: Sunday 21:00 UTC, commits results back |
 
 ## Configurable knobs (config.py)
 

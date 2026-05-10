@@ -138,6 +138,7 @@ def run_screen(skip_backtest: bool = False) -> None:
     os.makedirs(config.OUTPUT_DIR, exist_ok=True)
     xlsx_path = os.path.join(config.OUTPUT_DIR, f"SectorScreen_{today}.xlsx")
     html_path = os.path.join(config.OUTPUT_DIR, f"SectorScreen_{today}.html")
+    json_path = os.path.join(config.OUTPUT_DIR, f"SectorScreen_{today}.json")
 
     log.info("Writing Excel -> %s", xlsx_path)
     report.write_excel(rows, cycle_info, vintage, xlsx_path,
@@ -146,6 +147,19 @@ def run_screen(skip_backtest: bool = False) -> None:
     report.write_html(rows, cycle_info, heat, vintage, html_path,
                       backtest_df=bt_df, backtest_summary=bt_summary,
                       drilldown_data=dd_results)
+
+    # JSON sidecar for downstream automation (weekly_run.py, etc.)
+    import json as _json
+    log.info("Writing JSON  -> %s", json_path)
+    with open(json_path, "w") as f:
+        _json.dump({
+            "date": today,
+            "cycle": cycle_info,
+            "vintage": vintage,
+            "rows": rows,
+            "backtest_summary": bt_summary or {},
+            "drilldown": dd_results,
+        }, f, default=str, indent=2)
 
     # 7. Console (with ANSI stoplight colors)
     # Green = Buy, Yellow = Hold, Red = Avoid
