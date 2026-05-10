@@ -398,6 +398,53 @@ def _build_index_html(today: str) -> str:
     )
 
 
+def _build_history_index_html(history_root: Path) -> str:
+    """List every archived weekly run as a styled, branded index page."""
+    if not history_root.exists():
+        runs = []
+    else:
+        runs = sorted(
+            [d.name for d in history_root.iterdir() if d.is_dir() and len(d.name) == 10],
+            reverse=True,
+        )
+
+    year = date.today().year
+    if runs:
+        rows = []
+        for run_date in runs:
+            try:
+                pretty = date.fromisoformat(run_date).strftime("%B %d, %Y")
+            except ValueError:
+                pretty = run_date
+            rows.append(f"""      <a href="{run_date}/dashboard.html" class="card">
+        <h3>{pretty}</h3>
+        <p>Dashboard, commentary, and disclaimer for the {pretty} run.</p>
+        <p style="margin-top:0.5rem; font-size:0.9rem;"><span style="color:var(--blue);">View dashboard ↗</span> · <a href="{run_date}/summary.html" style="color:var(--blue);">View commentary ↗</a></p>
+      </a>""")
+        cards_html = "\n".join(rows)
+        body = f"""    <a href="../../" class="back">← Sector Rotation Screen home</a>
+
+    <h1>Past runs</h1>
+    <p class="subtitle">Every weekly run, date-stamped. The latest is also mirrored at <a href="../latest/dashboard.html">weekly/latest/</a>.</p>
+
+    <div class="cards" style="grid-template-columns: 1fr;">
+{cards_html}
+    </div>
+"""
+    else:
+        body = """    <a href="../../" class="back">← Sector Rotation Screen home</a>
+
+    <h1>Past runs</h1>
+    <p class="subtitle">The first weekly run hasn't happened yet. Check back after Sunday afternoon ET, or trigger a run manually from the <a href="https://github.com/brianbeals/sector-rotation-screener/actions">Actions tab</a>.</p>
+"""
+    return _wrap_in_page(
+        title="Past runs",
+        description="Date-stamped archive of every weekly sector rotation screen run, with dashboards and AI commentary.",
+        content=body,
+        year=year,
+    )
+
+
 def _build_summary_html(today: str, commentary_md: str) -> str:
     pretty = date.fromisoformat(today).strftime("%B %d, %Y")
     year = date.fromisoformat(today).year
@@ -493,8 +540,13 @@ def main():
     # 7. Refresh the styled landing page at the repo root (sector.brianbeals.com/)
     (repo_root / "index.html").write_text(index_html)
 
+    # 8. Refresh the history index (lists every dated run)
+    history_root = repo_root / "weekly" / "history"
+    (history_root / "index.html").write_text(_build_history_index_html(history_root))
+
     print(f"Published weekly artifacts to {latest} and {history}")
     print(f"Refreshed landing page: {repo_root / 'index.html'}")
+    print(f"Refreshed history index: {history_root / 'index.html'}")
 
 
 if __name__ == "__main__":
