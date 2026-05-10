@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Weekly Commentary — May 10, 2026 | Brian Beals</title>
-  <meta name="description" content="Claude's commentary on the May 10, 2026 sector rotation screen output. Not financial advice.">
+  <title>Sector Rotation Screen | Brian Beals</title>
+  <meta name="description" content="Weekly screen of 11 SPDR sector ETFs with composite scoring and Claude commentary. Open-source methodology demo by Brian Beals.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600&display=swap" rel="stylesheet">
@@ -145,34 +145,34 @@
     </nav>
   </header>
   <main>
-    <a href="../../" class="back">← Sector Rotation Screen home</a>
+    <h1>Sector Rotation Screen</h1>
+    <p class="subtitle">A weekly methodology demo. Open source, transparent rules.</p>
 
-    <h1>Weekly Commentary — May 10, 2026</h1>
+    <p>Every Sunday afternoon, GitHub Actions runs an 11-SPDR-ETF screen against three signals — seasonality, economic-cycle fit, and relative strength vs SPY — runs a 15-year backtest, and asks Claude for a brief commentary on what the output said.</p>
 
     <div class="disclaimer"><strong>⚠️ Not financial advice.</strong> This is auto-generated each week by Claude (Anthropic's AI model). Brian Beals is not a registered investment advisor, and Claude is not licensed to provide personalized financial advice. The screener is a research and methodology demo, not a recommendation system. Past performance does not predict future results. Do your own research before making any investment decisions.</div>
 
-    <p><a href="dashboard.html">View this week's dashboard ↗</a></p>
-
-    <hr>
-
-    <div class="commentary">
-<h2>What the screen said this week</h2>
-<p>The screener classified the economy as <strong>mid-cycle</strong> based on industrial production growing +0.7% year-over-year—positive but below 4%—with an upward-sloping trend (+0.49). That combination typically reflects steady expansion without overheating. Under this rule set, mid-cycle assigns high cycle-fit scores to economically sensitive sectors like Technology and Communications, and lower scores to defensive names.</p>
-<p><strong>Technology (XLK)</strong> topped the composite at 91.3, earning a Buy signal. It scored perfectly on cycle fit (100.0), received strong marks for relative strength (93.3, +17.43% over three months), and registered favorable seasonality (80.0). <strong>Communications (XLC)</strong> also crossed the Buy threshold at 65.5, driven by maximum cycle fit and very high seasonality (86.6), though its relative strength was weaker (23.7, -5.76% trailing three months) and carries a thin-sample warning for the seasonality component.</p>
-<p>Four sectors fell into Avoid territory (composite ≤ 40): <strong>Consumer Staples, Utilities, Financials, and Healthcare</strong>. All four showed poor recent relative strength, with Healthcare posting the weakest three-month performance at -15.74%. The mid-cycle classification penalized defensive sectors (Staples, Utilities, Healthcare) with lower cycle-fit scores (35.0), while Financials' Avoid signal stemmed primarily from its trailing RS rank of 10.3.</p>
-<h2>Things worth noticing</h2>
-<p><strong>Communications presents an unusual profile</strong>: it qualified for a Buy signal thanks to strong seasonality and perfect cycle alignment, yet its three-month relative strength is negative (-5.76%) and its RS component score sits at only 23.7. This illustrates how the composite can aggregate conflicting inputs—recent price underperformance versus favorable macro and calendar patterns. The methodology also flags Communications seasonality as based on a "thin sample," a reminder that shorter ETF histories reduce the statistical confidence of calendar effects.</p>
-<p><strong>Real Estate and Energy</strong> landed near the middle (53.4 and 50.4) with Hold signals. Both received mid-range cycle scores (50.0), meaning the mid-cycle phase neither favors nor penalizes them under this rule set. Their composite rankings hinged on the interplay of modest seasonality and relative strength; neither broke above the 65 Buy threshold or fell below the 40 Avoid line.</p>
-<p>The <strong>backtest disclosure</strong> is particularly notable this week: over the 15-year window, the strategy returned +224.93% versus +595.59% for SPY, meaning this rule set underperformed buy-and-hold by a wide margin after accounting for 10 basis points per trade. That historical result is a property of these specific thresholds, weights, and rebalancing logic—not a statement about sector rotation in general or the future utility of the screen.</p>
-<h2>Methodology reminder</h2>
-<p>The composite score is a weighted sum: 30% seasonality + 30% cycle fit + 40% relative strength. Signals trigger at fixed thresholds (Buy ≥ 65, Avoid ≤ 40). The backtest controls for lookahead bias by using FRED ALFRED point-in-time data vintages, ensuring macro indicators reflect only information available on each historical decision date. Performance figures describe how <em>this particular rule set</em> behaved in the past, not how markets or sectors will behave going forward.</p>
+    <h2>This week — May 10, 2026</h2>
+    <div class="cards">
+      <a href="weekly/latest/dashboard.html" class="card">
+        <h3>Dashboard ↗</h3>
+        <p>Score table, seasonality heatmap, RS bars, equity curve, cycle context.</p>
+      </a>
+      <a href="weekly/latest/summary.html" class="card">
+        <h3>Commentary ↗</h3>
+        <p>Claude's plain-language reading of this week's screen.</p>
+      </a>
     </div>
 
-    <hr>
+    <h2>Why this exists</h2>
+    <p>Sector rotation isn't an investment thesis I'm pitching. It's a testbed for the kind of analytical workflow I'd build for a CIO or CDO who wants to evaluate macro exposures across business units: ingest data, score against multiple signals, output something humans can read, backtest the methodology before trusting it.</p>
+    <p>The same pattern works for portfolio companies, supply-chain risk, customer-segment health, or any question where "let's score it against multiple signals and see how that would have played out historically" beats gut feel.</p>
 
-    <p class="attribution">
-      By <a href="https://brianbeals.com">Brian Beals</a>. Methodology and code: <a href="https://github.com/brianbeals/sector-rotation-screener">github.com/brianbeals/sector-rotation-screener</a>. Commentary generated by Claude (claude-sonnet-4-5).
-    </p>
+    <h2>Open source</h2>
+    <p>The screener, methodology, weekly automation, and license live at <a href="https://github.com/brianbeals/sector-rotation-screener">github.com/brianbeals/sector-rotation-screener</a>.</p>
+
+    <h2>Past runs</h2>
+    <p><a href="weekly/history/">Browse the date-stamped archive →</a></p>
 
   </main>
   <footer class="site">
