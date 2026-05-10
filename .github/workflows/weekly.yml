@@ -40,7 +40,7 @@ jobs:
         run: |
           git config user.name "brianbeals"
           git config user.email "154365158+Bbeals42@users.noreply.github.com"
-          git add weekly/
+          git add weekly/ index.html
           if git diff --staged --quiet; then
             echo "No changes to commit."
           else
