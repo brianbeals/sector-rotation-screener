@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weekly Commentary — May 10, 2026 | Brian Beals</title>
+  <meta name="description" content="Claude's commentary on the May 10, 2026 sector rotation screen output. Not financial advice.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #1E3A5F;
+      --blue: #2E86C1;
+      --bg: #F4F6F9;
+      --text: #1A1A2A;
+      --muted: #6B7280;
+      --card: #FFFFFF;
+      --warn-bg: #FEF3F2;
+      --warn-border: #C0392B;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(at 25% 20%, rgba(46,134,193,0.12) 0, transparent 50%),
+        radial-gradient(at 75% 80%, rgba(30,58,95,0.10) 0, transparent 50%),
+        var(--bg);
+      line-height: 1.6;
+    }
+    h1, h2, h3 {
+      font-family: "Source Serif 4", Georgia, serif;
+      color: var(--navy);
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+    h1 { font-size: 2.5rem; margin: 0 0 1rem; }
+    h2 { font-size: 1.6rem; margin: 2.5rem 0 1rem; }
+    h3 { font-size: 1.15rem; margin: 1.5rem 0 0.5rem; }
+    p { margin: 0 0 1rem; }
+    a { color: var(--blue); text-underline-offset: 4px; }
+    a:hover { text-decoration: none; }
+    header.site { padding: 2rem 1.5rem 0.5rem; }
+    header.site nav {
+      max-width: 42rem;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.95rem;
+    }
+    header.site nav .brand {
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    header.site nav .links { display: flex; gap: 1.5rem; }
+    header.site nav .links a { color: var(--text); text-decoration: none; }
+    header.site nav .links a:hover { text-decoration: underline; }
+    main { max-width: 42rem; margin: 0 auto; padding: 3rem 1.5rem 2rem; }
+    .subtitle { font-size: 1.2rem; color: var(--muted); margin-bottom: 2rem; }
+    .disclaimer {
+      background: var(--warn-bg);
+      border-left: 4px solid var(--warn-border);
+      padding: 1rem 1.25rem;
+      border-radius: 4px;
+      font-size: 0.95rem;
+      margin: 2rem 0;
+      color: var(--text);
+    }
+    .disclaimer strong { color: var(--warn-border); }
+    .cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    @media (max-width: 600px) { .cards { grid-template-columns: 1fr; } }
+    .card {
+      background: var(--card);
+      border-radius: 8px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      text-decoration: none;
+      color: var(--text);
+      display: block;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      text-decoration: none;
+    }
+    .card h3 { color: var(--navy); margin-top: 0; }
+    .card p { color: var(--muted); margin-bottom: 0; font-size: 0.95rem; }
+    .back {
+      display: inline-block;
+      margin-bottom: 1.5rem;
+      color: var(--blue);
+      text-decoration: none;
+      font-size: 0.95rem;
+    }
+    .back:hover { text-decoration: underline; }
+    .commentary { font-size: 1.02rem; }
+    .commentary p { margin: 0 0 1rem; }
+    .commentary h2 { font-size: 1.4rem; margin: 2rem 0 0.75rem; }
+    .commentary strong { color: var(--navy); }
+    .attribution {
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-style: italic;
+      margin-top: 2rem;
+    }
+    .attribution a { color: var(--muted); }
+    footer.site {
+      max-width: 42rem;
+      margin: 2rem auto;
+      padding: 1.5rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+      text-align: center;
+    }
+    footer.site a { color: inherit; text-underline-offset: 3px; }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      background: rgba(30,58,95,0.06);
+      padding: 0.1em 0.4em;
+      border-radius: 3px;
+      font-size: 0.92em;
+    }
+    hr { border: none; border-top: 1px solid rgba(30,58,95,0.12); margin: 2rem 0; }
+  </style>
+</head>
+<body>
+  <header class="site">
+    <nav>
+      <a href="https://brianbeals.com/" class="brand">Brian Beals</a>
+      <div class="links">
+        <a href="https://brianbeals.com/about">About</a>
+        <a href="https://brianbeals.com/contact">Contact</a>
+      </div>
+    </nav>
+  </header>
+  <main>
+    <a href="../../" class="back">← Sector Rotation Screen home</a>
+
+    <h1>Weekly Commentary — May 10, 2026</h1>
+
+    <div class="disclaimer"><strong>⚠️ Not financial advice.</strong> This is auto-generated each week by Claude (Anthropic's AI model). Brian Beals is not a registered investment advisor, and Claude is not licensed to provide personalized financial advice. The screener is a research and methodology demo, not a recommendation system. Past performance does not predict future results. Do your own research before making any investment decisions.</div>
+
+    <p><a href="dashboard.html">View this week's dashboard ↗</a></p>
+
+    <hr>
+
+    <div class="commentary">
+<h2>What the screen said this week</h2>
+<p>The screener classified the environment as <strong>mid-cycle</strong> based on industrial production growing year-over-year at +0.7% (within the 0–4% expansion band) and a positive curve signal (+0.49), indicating steady but moderate growth. Under this ruleset, mid-cycle tends to favor cyclical sectors but not defensives.</p>
+<p><strong>Technology (XLK)</strong> led the composite at 91.3, driven by a perfect 100.0 cycle-fit score, strong 80.0 seasonality, and solid relative strength (93.3 RS, +17.43% over three months). This combination placed it in "Buy" signal territory. <strong>Communications (XLC)</strong> also cleared the 65 threshold with a 65.5 composite, helped by a 100.0 cycle fit and high seasonality—though the latter carried a "thin sample" warning. Its relative strength was weak (23.7 RS, −5.76% three-month), illustrating that the composite can still generate a Buy signal when cycle and season align strongly.</p>
+<p>Four sectors landed in "Avoid" territory (composite ≤ 40): <strong>Consumer Staples, Utilities, Financials</strong>, and <strong>Healthcare</strong>. All four posted cycle-fit scores of 35 or below, consistent with the ruleset's mid-cycle preferences. Healthcare showed the weakest relative strength in the entire list (7.6 RS, −15.74% three-month), while Financials also lagged badly (10.3 RS, −12.18%).</p>
+<h2>Things worth noticing</h2>
+<p><strong>Communications (XLC)</strong> is an instructive edge case: it earned a Buy signal despite being the second-weakest sector by relative strength and posting a negative three-month return. Because the composite weights cycle fit and seasonality at 30% each (versus 40% for RS), a sector can still rank high if two factors strongly agree—even when recent price action diverges. The "thin sample" notation flags that XLC's seasonal pattern may be less reliable due to limited history.</p>
+<p>The <strong>mid-tier cluster</strong>—Real Estate, Materials, Energy, Industrials, and Consumer Discretionary—all scored between 42.8 and 53.4, landing in Hold. Each received a 50.0 cycle-fit score (the neutral/mixed signal under mid-cycle rules) and showed middling relative strength. This congestion reflects uncertainty: the methodology sees no strong cyclical tailwind or headwind for these groups given current macro data.</p>
+<p>The backtest disclosure is worth pausing on: over fifteen years with 10 basis points of assumed trading cost per leg, this ruleset returned +224.93% versus +595.59% for SPY—a substantial underperformance. The screen continued to generate signals this week, but the historical result reminds users that <strong>a mechanical system can produce output without delivering alpha</strong>. Past underperformance does not predict future results (in either direction), but it does highlight that this approach has not historically added value net of friction.</p>
+<h2>Methodology reminder</h2>
+<p>The composite score is a weighted sum: 30% seasonality + 30% cycle fit + 40% relative strength. Signals trigger at fixed thresholds (Buy ≥ 65, Avoid ≤ 40). The backtest controls for lookahead bias by using FRED ALFRED data vintages, ensuring only information available at each historical decision point was used. The +224.93% backtest result is a property of this particular ruleset and window—not a forecast of future strategy performance or market behavior.</p>
+    </div>
+
+    <hr>
+
+    <p class="attribution">
+      By <a href="https://brianbeals.com">Brian Beals</a>. Methodology and code: <a href="https://github.com/brianbeals/sector-rotation-screener">github.com/brianbeals/sector-rotation-screener</a>. Commentary generated by Claude (claude-sonnet-4-5).
+    </p>
+
+  </main>
+  <footer class="site">
+    © 2026 Brian Beals · <a href="https://brianbeals.com">brianbeals.com</a> · <a href="https://github.com/brianbeals/sector-rotation-screener">github</a>
+  </footer>
+</body>
+</html>

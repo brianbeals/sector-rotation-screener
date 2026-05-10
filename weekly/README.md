@@ -8,7 +8,7 @@ said.
 ## Latest
 
 - **[Dashboard](latest/dashboard.html)** — score table, seasonality heatmap, RS bars, equity curve, cycle context
-- **[Commentary](latest/summary.md)** — Claude's plain-language reading of the week
+- **[Commentary](latest/summary.html)** — Claude's plain-language reading of the week (or [as markdown](latest/summary.md))
 - Last run: 2026-05-10
 
 ## Disclaimer

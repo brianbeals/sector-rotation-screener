@@ -6,27 +6,25 @@
 
 ---
 
-# Sector Rotation Screen – 2026-05-10
-
 ## What the screen said this week
 
-The screen classified the current environment as **mid-cycle**, based on industrial production growing +0.7% year-over-year with a positive second derivative (+0.49). That configuration—moderate expansion with upward momentum—maps to the methodology's "steady expansion" label and assigns maximum cycle-fit scores to sectors historically correlated with mid-cycle conditions.
+The screener classified the environment as **mid-cycle** based on industrial production growing year-over-year at +0.7% (within the 0–4% expansion band) and a positive curve signal (+0.49), indicating steady but moderate growth. Under this ruleset, mid-cycle tends to favor cyclical sectors but not defensives.
 
-**Technology (XLK)** dominated the composite rankings with a score of 91.3, earning a Buy signal. It posted strong marks across all three pillars: 80th percentile seasonality, perfect cycle fit (100), and excellent relative strength (93.3, with three-month performance of +17.43% versus the benchmark). **Communications (XLC)** also cleared the Buy threshold at 65.5, though its high score leaned heavily on cycle fit and seasonality; the methodology flagged its seasonality component as drawn from a thin sample, and its relative strength was weak (23.7) with negative three-month momentum.
+**Technology (XLK)** led the composite at 91.3, driven by a perfect 100.0 cycle-fit score, strong 80.0 seasonality, and solid relative strength (93.3 RS, +17.43% over three months). This combination placed it in "Buy" signal territory. **Communications (XLC)** also cleared the 65 threshold with a 65.5 composite, helped by a 100.0 cycle fit and high seasonality—though the latter carried a "thin sample" warning. Its relative strength was weak (23.7 RS, −5.76% three-month), illustrating that the composite can still generate a Buy signal when cycle and season align strongly.
 
-At the bottom, **Healthcare (XLV)**, **Financials (XLF)**, **Utilities (XLU)**, and **Consumer Staples (XLP)** all triggered Avoid signals (composite ≤ 40). Notably, XLV carried decent seasonality (63.1) but was penalized by low cycle fit (35) and the worst relative strength in the screen (7.6, –15.74% over three months).
+Four sectors landed in "Avoid" territory (composite ≤ 40): **Consumer Staples, Utilities, Financials**, and **Healthcare**. All four posted cycle-fit scores of 35 or below, consistent with the ruleset's mid-cycle preferences. Healthcare showed the weakest relative strength in the entire list (7.6 RS, −15.74% three-month), while Financials also lagged badly (10.3 RS, −12.18%).
 
 ## Things worth noticing
 
-**XLC presents an educational case study** in composite-score construction. Despite a Buy signal, its recent price action has lagged (–5.76% relative strength over three months), and its high seasonality score comes with a data-quality warning. The methodology treats all three pillars mechanically; a sector can score well on two dimensions while underperforming on the third. Readers interested in factor interaction will want to compare XLC's signal to XLK's, where all three components aligned.
+**Communications (XLC)** is an instructive edge case: it earned a Buy signal despite being the second-weakest sector by relative strength and posting a negative three-month return. Because the composite weights cycle fit and seasonality at 30% each (versus 40% for RS), a sector can still rank high if two factors strongly agree—even when recent price action diverges. The "thin sample" notation flags that XLC's seasonal pattern may be less reliable due to limited history.
 
-**The backtest result is sobering**: over the fifteen-year window, this rule set returned +276.73% versus +595.59% for SPY, after accounting for 10-basis-point trading costs. The strategy underperformed buy-and-hold by a wide margin. That outcome is a feature of *this particular combination* of weights, thresholds, and rebalancing frequency, not a statement about sector rotation in general. Changing any parameter—seasonality window length, composite weights, signal thresholds—would yield a different equity curve.
+The **mid-tier cluster**—Real Estate, Materials, Energy, Industrials, and Consumer Discretionary—all scored between 42.8 and 53.4, landing in Hold. Each received a 50.0 cycle-fit score (the neutral/mixed signal under mid-cycle rules) and showed middling relative strength. This congestion reflects uncertainty: the methodology sees no strong cyclical tailwind or headwind for these groups given current macro data.
 
-**Relative strength and cycle fit diverged across the middle tier**. Energy (XLE), for instance, posted a 53.1 RS score but only 50.0 cycle fit; Real Estate (XLRE) showed 45.1 RS and 50.0 cycle fit. Both landed in Hold territory, illustrating how the 40% RS weighting and 30% cycle weighting interact when factors point in different directions.
+The backtest disclosure is worth pausing on: over fifteen years with 10 basis points of assumed trading cost per leg, this ruleset returned +224.93% versus +595.59% for SPY—a substantial underperformance. The screen continued to generate signals this week, but the historical result reminds users that **a mechanical system can produce output without delivering alpha**. Past underperformance does not predict future results (in either direction), but it does highlight that this approach has not historically added value net of friction.
 
 ## Methodology reminder
 
-The composite score is calculated as **(0.30 × Seasonality) + (0.30 × Cycle Fit) + (0.40 × Relative Strength)**. Lookahead bias is controlled by using FRED ALFRED data vintages that reflect only information available as of each historical rebalance date. The backtest performance is an artifact of these specific rules applied to this historical period; it does not forecast future results or validate the approach.
+The composite score is a weighted sum: 30% seasonality + 30% cycle fit + 40% relative strength. Signals trigger at fixed thresholds (Buy ≥ 65, Avoid ≤ 40). The backtest controls for lookahead bias by using FRED ALFRED data vintages, ensuring only information available at each historical decision point was used. The +224.93% backtest result is a property of this particular ruleset and window—not a forecast of future strategy performance or market behavior.
 
 ---
 
