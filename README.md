@@ -94,7 +94,7 @@ The backtest uses FRED's ALFRED endpoint (`get_series_all_releases`) to fetch ea
 
 ## What's deliberately not in here
 
-No options data. No sentiment indicators. No individual-stock scoring beyond the sector drill-down. No ML. The point is a small, transparent, auditable pipeline. Not a black box.
+No options data. No sentiment indicators. No individual-stock scoring beyond the sector drill-down. No ML. The point is a small, auditable pipeline you can read end to end. Not a black box.
 
 ## Easy mode (macOS)
 
