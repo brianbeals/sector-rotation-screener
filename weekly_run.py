@@ -364,7 +364,7 @@ def _build_index_html(today: str) -> str:
     content = f"""    <h1>Sector Rotation Screen</h1>
     <p class="subtitle">A weekly methodology demo. Open source, transparent rules.</p>
 
-    <p>Every Sunday afternoon, GitHub Actions runs an 11-SPDR-ETF screen against three signals — seasonality, economic-cycle fit, and relative strength vs SPY — runs a 15-year backtest, and asks Anthropic's Claude for a brief commentary on what the output said.</p>
+    <p>Every Sunday afternoon, GitHub Actions runs an 11-SPDR-ETF screen against three signals (seasonality, economic-cycle fit, and relative strength vs SPY), runs a 15-year backtest, and asks Anthropic's Claude for a brief commentary on what the output said.</p>
 
     {_DISCLAIMER_HTML}
 
