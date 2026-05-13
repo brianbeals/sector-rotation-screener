@@ -37,9 +37,24 @@ log = logging.getLogger(__name__)
 
 # --- Helpers -----------------------------------------------------------------
 
-def _month_ends(start: pd.Timestamp, end: pd.Timestamp) -> pd.DatetimeIndex:
-    rule = "ME" if hasattr(pd.tseries.offsets, "MonthEnd") else "M"
+def _rebalance_dates(start: pd.Timestamp, end: pd.Timestamp,
+                     frequency: str = "monthly") -> pd.DatetimeIndex:
+    """Generate rebalance dates honoring config.REBALANCE_FREQUENCY.
+
+    'monthly'   -> month-end dates
+    'quarterly' -> calendar quarter-end dates (Mar, Jun, Sep, Dec)
+    """
+    freq = (frequency or "monthly").lower()
+    if freq == "quarterly":
+        rule = "QE" if hasattr(pd.tseries.offsets, "QuarterEnd") else "Q"
+    else:
+        rule = "ME" if hasattr(pd.tseries.offsets, "MonthEnd") else "M"
     return pd.date_range(start, end, freq=rule)
+
+
+# Backwards-compat alias for any external caller still using _month_ends.
+def _month_ends(start: pd.Timestamp, end: pd.Timestamp) -> pd.DatetimeIndex:
+    return _rebalance_dates(start, end, "monthly")
 
 
 def _eligible_tickers(asof: pd.Timestamp) -> List[str]:
@@ -82,7 +97,7 @@ def run_backtest(prices: Dict[str, pd.DataFrame],
 
     end = pd.Timestamp(date.today()).normalize()
     start = end - pd.DateOffset(years=years)
-    rebal_dates = _month_ends(start, end)
+    rebal_dates = _rebalance_dates(start, end, config.REBALANCE_FREQUENCY)
 
     cost_one_way = config.TRADE_COST_BPS / 10000.0
     spy_close = _close(spy)
@@ -188,9 +203,10 @@ def _summarize(df: pd.DataFrame) -> Dict[str, float]:
         eq = df[eq_col]
         cum = float(eq.iloc[-1] - 1.0)
         cagr = float(eq.iloc[-1] ** (1.0 / years) - 1.0)
-        # Monthly Sharpe scaled to annual; rf = 0 for simplicity.
+        # Scale to annual Sharpe based on rebalance frequency; rf = 0.
+        periods_per_year = 4 if (config.REBALANCE_FREQUENCY or "monthly").lower() == "quarterly" else 12
         std = float(rets.std())
-        sharpe = float(rets.mean() / std * np.sqrt(12)) if std > 0 else float("nan")
+        sharpe = float(rets.mean() / std * np.sqrt(periods_per_year)) if std > 0 else float("nan")
         rolling_max = eq.cummax()
         drawdown = eq / rolling_max - 1.0
         max_dd = float(drawdown.min())

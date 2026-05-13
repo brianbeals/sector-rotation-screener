@@ -216,7 +216,7 @@ RS_WEIGHTS      = {"1m": 0.25, "3m": 0.40, "6m": 0.35}
 # zero survivors -> sit in cash for the period.
 MAX_POSITIONS: int = 3
 
-# How often the live screen rebalances. Backtest is hardcoded to monthly.
+# How often the screen and backtest rebalance. Backtest now honors this.
 REBALANCE_FREQUENCY: str = "monthly"   # "monthly" | "quarterly"
 
 # Drop a position if its composite drops below this between rebalance dates.
