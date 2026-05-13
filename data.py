@@ -144,9 +144,21 @@ def fetch_macro_vintage(api_key: Optional[str] = None,
         try:
             with open(cache_file, "rb") as fh:
                 cached = pickle.load(fh)
-            if cached.get("_fetched_on") == date.today().isoformat():
+            data_only = {k: v for k, v in cached.items() if not k.startswith("_")}
+            empty_series = [k for k, df in data_only.items() if df.empty]
+            if (cached.get("_fetched_on") == date.today().isoformat()
+                    and not empty_series):
                 log.info("Using cached vintage FRED (fetched today)")
-                return {k: v for k, v in cached.items() if not k.startswith("_")}
+                return data_only
+            if empty_series:
+                # An earlier run wrote a degenerate cache (e.g. FRED was
+                # unreachable). Ignore it — using it would make the backtest
+                # fall back to Mid-cycle for every month and return a
+                # misleadingly good result.
+                log.warning(
+                    "Vintage cache has empty series %s; ignoring and refetching",
+                    empty_series,
+                )
         except Exception as exc:
             log.warning("Vintage cache unreadable, refetching: %s", exc)
 
@@ -215,8 +227,20 @@ def fetch_macro_vintage(api_key: Optional[str] = None,
             out[code] = pd.DataFrame(columns=["date","realtime_start","realtime_end","value"])
 
     if use_cache:
-        with open(cache_file, "wb") as fh:
-            pickle.dump({**out, "_fetched_on": date.today().isoformat()}, fh)
+        # Refuse to cache a result where any series came back empty. A pickle
+        # with empty DataFrames poisons future runs into using zero-vintage
+        # data and producing a misleadingly good backtest. Better to refetch
+        # next run than to enshrine a bad result.
+        empty_series = [k for k, df in out.items() if df.empty]
+        if empty_series:
+            log.warning(
+                "Skipping vintage cache write: empty series %s "
+                "(FRED probably unreachable this run)",
+                empty_series,
+            )
+        else:
+            with open(cache_file, "wb") as fh:
+                pickle.dump({**out, "_fetched_on": date.today().isoformat()}, fh)
     return out
 
 
