@@ -3,7 +3,7 @@
 Screens the 11 SPDR sector ETFs against three signals: seasonality, economic-cycle fit, and relative strength vs SPY. Produces a Buy / Hold / Avoid composite. Backtests the strategy 15 years against SPY.
 
 Outputs an Excel workbook and a single-page HTML dashboard.
-<img alt="Sector Rotation dashboard — weekly Buy/Hold/Avoid composite across 11 SPDR sector ETFs, with macro context and an honesty banner when the strategy lags SPY" src="https://github.com/user-attachments/assets/c465b39b-72ca-406c-850f-868a088dcaa7" />
+<img alt="Sector Rotation dashboard — weekly Buy/Hold/Avoid composite across 11 SPDR sector ETFs, with macro context and an honesty banner when the strategy lags SPY" src="https://github.com/user-attachments/assets/6e4bb468-6665-4415-bf3d-7437c6c2afec" />
 
 *Weekly dashboard, published every Sunday. The banner across the top honestly reports whether the strategy is beating SPY net of trading costs.*
 > **Not financial advice.** This is research code I built for myself. It's published as a methodology demo, not a recommendation. Past performance does not indicate future results. Don't trade on this without doing your own homework.
