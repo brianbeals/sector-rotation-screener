@@ -8,7 +8,7 @@
 
 ## Commentary unavailable
 
-Claude commentary failed for this run: `"Could not resolve authentication method. Expected one of api_key, auth_token, or credentials to be set. Or for one of the `X-Api-Key` or `Authorization` headers to be explicitly omitted"`. The dashboard is still published below; the methodology and underlying scores are unchanged.
+Claude commentary failed for this run: `Error code: 401 - {'type': 'error', 'error': {'type': 'authentication_error', 'message': 'invalid x-api-key'}, 'request_id': 'req_011CbbNjYUaDbkh3ntYexyMr'}`. The dashboard is still published below; the methodology and underlying scores are unchanged.
 
 ---
 
