@@ -27,7 +27,7 @@ import config
 import screener
 
 
-CLAUDE_MODEL = "claude-sonnet-4-5"  # set to claude-sonnet-4-6 for the latest model
+CLAUDE_MODEL = "claude-opus-4-8"  # Anthropic API model ID (pinned snapshot). Bump the version here to upgrade.
 
 
 DISCLAIMER = (
