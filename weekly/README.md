@@ -2,13 +2,13 @@
 
 Auto-generated every Sunday afternoon ET by GitHub Actions. The screener pulls
 fresh data from yfinance and FRED, scores the 11 SPDR sector ETFs, runs the
-15-year backtest, and asks Anthropic's Claude for a short commentary on what
-the screen said.
+backtest since May 2011, and asks Anthropic's Claude for a short commentary on
+what the screen said.
 
 ## Latest
 
-- **[Dashboard](latest/dashboard.html)** — score table, seasonality heatmap, RS bars, equity curve, cycle context
-- **[Commentary](latest/summary.html)** — an AI reading of this week's screen (or [as markdown](latest/summary.md))
+- **[Dashboard](latest/dashboard.html)**: score table, seasonality heatmap, RS bars, equity curve, cycle context
+- **[Commentary](latest/summary.html)**: an AI reading of this week's screen (or [as markdown](latest/summary.md))
 - Last run: 2026-05-31
 
 ## Disclaimer
