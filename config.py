@@ -136,9 +136,18 @@ SEASONALITY_MIN_YEARS = 5
 # its seasonality score as "thin sample."
 SEASONALITY_TRUST_YEARS = 10
 
-# How far back the backtest walks. Defaults to 15 — bumping this beyond ~25
-# starts to outrun XLRE/XLC inceptions and the universe gets sparse early.
+# How far back the backtest walks when no fixed anchor is set. Bumping this
+# beyond ~25 starts to outrun XLRE/XLC inceptions and the universe gets sparse
+# early.
 BACKTEST_YEARS = 15
+
+# Fixed inception date for the backtest. When set, the walk-forward starts here
+# and only ever extends forward, so the published cumulative figures grow
+# smoothly instead of lurching each month-end as an old month drops off the
+# front of a rolling window. Set to None to fall back to a rolling
+# BACKTEST_YEARS window ending today. 2011-05-31 matches where the prior
+# rolling 15-year window started, so the historical series stays continuous.
+BACKTEST_START = "2011-05-31"
 
 
 # --- Cycle classification -----------------------------------------------------

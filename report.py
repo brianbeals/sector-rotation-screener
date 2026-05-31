@@ -146,7 +146,12 @@ def write_excel(rows: List[Dict],
     if backtest_df is not None and not backtest_df.empty:
         wsb = wb.create_sheet("Backtest")
         # Summary block
-        wsb["A1"] = f"Backtest Summary — last {config.BACKTEST_YEARS} years"
+        _bt_period = (
+            "since " + pd.Timestamp(config.BACKTEST_START).strftime("%B %Y")
+            if getattr(config, "BACKTEST_START", None)
+            else f"last {config.BACKTEST_YEARS} years"
+        )
+        wsb["A1"] = f"Backtest Summary, {_bt_period}"
         wsb["A1"].font = Font(bold=True, size=14, color="FFFFFF")
         wsb["A1"].fill = PatternFill("solid", fgColor=NAVY)
         wsb.merge_cells("A1:F1")
@@ -351,7 +356,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
 
 {% if backtest_warning %}
 <div class="banner warn">
-  ⚠ Strategy did NOT beat SPY net of {{ trade_cost_bps }} bps trading cost over the {{ backtest_years }}-year backtest. Cumulative: strategy {{ strategy_cum }} vs SPY {{ spy_cum }}.
+  ⚠ Strategy did NOT beat SPY net of {{ trade_cost_bps }} bps trading cost in the backtest {{ backtest_period }}. Cumulative: strategy {{ strategy_cum }} vs SPY {{ spy_cum }}.
 </div>
 {% endif %}
 
@@ -428,7 +433,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
 <div class="legend">Click any column header to sort. ⚠ flags sectors with under {{ trust_yrs }} years of history. Composite weights and signal thresholds tunable in <code>config.py</code>.</div>
 
 {% if has_backtest %}
-<h2 class="section">Backtest — last {{ backtest_years }} years</h2>
+<h2 class="section">Backtest {{ backtest_period }}</h2>
 <div class="equity-card">
   <div class="stats-grid">
     <div class="stat"><div class="lbl">Strategy cum return</div><div class="val">{{ strategy_cum }}</div><div class="sub">SPY: {{ spy_cum }}</div></div>
@@ -747,6 +752,11 @@ def write_html(rows: List[Dict],
 
         has_backtest    = has_bt,
         backtest_years  = config.BACKTEST_YEARS,
+        backtest_period = (
+            "since " + pd.Timestamp(config.BACKTEST_START).strftime("%B %Y")
+            if getattr(config, "BACKTEST_START", None)
+            else f"over the last {config.BACKTEST_YEARS} years"
+        ),
         backtest_warning= bt_warn,
         trade_cost_bps  = f"{config.TRADE_COST_BPS:.0f}",
         min_score       = f"{config.MIN_SCORE_TO_HOLD:.0f}",

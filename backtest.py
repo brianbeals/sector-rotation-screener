@@ -96,7 +96,10 @@ def run_backtest(prices: Dict[str, pd.DataFrame],
         raise RuntimeError("Need SPY price history for backtest.")
 
     end = pd.Timestamp(date.today()).normalize()
-    start = end - pd.DateOffset(years=years)
+    if getattr(config, "BACKTEST_START", None):
+        start = pd.Timestamp(config.BACKTEST_START)
+    else:
+        start = end - pd.DateOffset(years=years)
     rebal_dates = _rebalance_dates(start, end, config.REBALANCE_FREQUENCY)
 
     cost_one_way = config.TRADE_COST_BPS / 10000.0

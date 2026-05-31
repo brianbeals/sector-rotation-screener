@@ -49,13 +49,17 @@ CRITICAL CONSTRAINTS:
 - Comment on what the screen says THIS WEEK, not what someone should DO with it.
 - If a sector has a "Buy" signal in the screen, that is an output of THIS rule set, not your recommendation. Frame accordingly.
 
+FORMATTING:
+- Do NOT use em dashes. Use commas, periods, or the word "to" for ranges. This is a hard rule.
+- Refer to the backtest window as "since {bt_inception}", never as a fixed number of years.
+
 This week's screen output:
 
 Date: {date}
 Cycle phase: {cycle_phase}
 Cycle reasoning: {cycle_why}
 
-Backtest ({bt_years}y, {trade_cost_bps} bps trading cost): Strategy {strategy_cum:+.2%} vs SPY {spy_cum:+.2%}. {beats_spy_text}
+Backtest (since {bt_inception}, {trade_cost_bps} bps trading cost): Strategy {strategy_cum:+.2%} vs SPY {spy_cum:+.2%}. {beats_spy_text}
 
 Sector scores (composite scale 0-100, sorted descending):
 {sector_table}
@@ -68,7 +72,7 @@ Macro vintage as of: {vintage_date}
 Write a markdown commentary in this exact structure (use the headings verbatim):
 
 ## What the screen said this week
-2-3 short paragraphs. Cover: the current cycle phase classification and the macro signals driving it; which sectors topped the composite (and roughly why — seasonality, cycle fit, relative strength, or some combination); any notable Avoid signals.
+2-3 short paragraphs. Cover: the current cycle phase classification and the macro signals driving it; which sectors topped the composite (and roughly why, whether seasonality, cycle fit, relative strength, or some combination); any notable Avoid signals.
 
 ## Things worth noticing
 2-3 short paragraphs of educational observations. Possible angles: sectors with strong RS but weak cycle fit (or vice versa), thin-sample seasonality warnings, divergence between cycle phase and price action, anything counterintuitive in the rankings. Stay descriptive, not prescriptive. No forward predictions.
@@ -96,6 +100,30 @@ def _build_sector_table(rows: list) -> str:
     return "\n".join(lines)
 
 
+def _backtest_inception_label() -> str:
+    """Human label for the backtest start, e.g. 'May 2011'.
+
+    Uses the fixed anchor when set, otherwise the rolling window start.
+    """
+    import pandas as pd
+    if getattr(config, "BACKTEST_START", None):
+        start = pd.Timestamp(config.BACKTEST_START)
+    else:
+        start = pd.Timestamp(date.today()) - pd.DateOffset(years=config.BACKTEST_YEARS)
+    return start.strftime("%B %Y")
+
+
+def _strip_em_dashes(text: str) -> str:
+    """Hard guarantee: no em dashes reach the published commentary.
+
+    The prompt already forbids them, but a model can still slip one in, so we
+    enforce it on the output. Spaced em dashes become a comma; bare ones too.
+    """
+    text = text.replace(" — ", ", ").replace(" —", ",").replace("— ", ", ")
+    text = text.replace("—", ", ")  # any remaining em dash
+    return text
+
+
 def _generate_commentary(data: dict) -> str:
     bt = data.get("backtest_summary") or {}
     beats = bt.get("beats_spy_net")
@@ -110,10 +138,10 @@ def _generate_commentary(data: dict) -> str:
     prompt = PROMPT_TEMPLATE.format(
         date=data["date"],
         cycle_phase=data["cycle"].get("phase", "Unknown"),
-        cycle_why=data["cycle"].get("why", "—"),
+        cycle_why=data["cycle"].get("why", "n/a"),
         strategy_cum=bt.get("strategy_cum", 0),
         spy_cum=bt.get("spy_cum", 0),
-        bt_years=config.BACKTEST_YEARS,
+        bt_inception=_backtest_inception_label(),
         trade_cost_bps=int(config.TRADE_COST_BPS),
         beats_spy_text=beats_text,
         sector_table=_build_sector_table(data["rows"]),
@@ -122,7 +150,7 @@ def _generate_commentary(data: dict) -> str:
         w_rs=int(round(w.rel_strength * 100)),
         signal_buy=int(config.SIGNAL_BUY),
         signal_avoid=int(config.SIGNAL_AVOID),
-        vintage_date=data["vintage"].get("fred_vintage", "—"),
+        vintage_date=data["vintage"].get("fred_vintage", "n/a"),
     )
 
     client = anthropic.Anthropic()
@@ -131,11 +159,11 @@ def _generate_commentary(data: dict) -> str:
         max_tokens=2000,
         messages=[{"role": "user", "content": prompt}],
     )
-    return response.content[0].text.strip()
+    return _strip_em_dashes(response.content[0].text.strip())
 
 
 def _build_summary_md(today: str, commentary: str) -> str:
-    return f"""# Weekly Sector Rotation Commentary — {today}
+    return f"""# Weekly Sector Rotation Commentary: {today}
 
 {DISCLAIMER}
 
@@ -156,13 +184,13 @@ def _build_weekly_index(today: str) -> str:
 
 Auto-generated every Sunday afternoon ET by GitHub Actions. The screener pulls
 fresh data from yfinance and FRED, scores the 11 SPDR sector ETFs, runs the
-15-year backtest, and asks Anthropic's Claude for a short commentary on what
-the screen said.
+backtest since May 2011, and asks Anthropic's Claude for a short commentary on
+what the screen said.
 
 ## Latest
 
-- **[Dashboard](latest/dashboard.html)** — score table, seasonality heatmap, RS bars, equity curve, cycle context
-- **[Commentary](latest/summary.html)** — an AI reading of this week's screen (or [as markdown](latest/summary.md))
+- **[Dashboard](latest/dashboard.html)**: score table, seasonality heatmap, RS bars, equity curve, cycle context
+- **[Commentary](latest/summary.html)**: an AI reading of this week's screen (or [as markdown](latest/summary.md))
 - Last run: {today}
 
 ## Disclaimer
@@ -186,6 +214,7 @@ PAGE_SHELL = """<!DOCTYPE html>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{title} | Brian Beals</title>
   <meta name="description" content="{description}">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231E3A5F'/%3E%3Ctext x='16' y='15' text-anchor='middle' dominant-baseline='central' fill='white' font-family='system-ui' font-size='16' font-weight='800'%3EBB%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600&display=swap" rel="stylesheet">
@@ -329,7 +358,7 @@ PAGE_SHELL = """<!DOCTYPE html>
 {content}
   </main>
   <footer class="site">
-    © {year} Brian Beals · <a href="https://brianbeals.com">brianbeals.com</a> · <a href="https://github.com/brianbeals/sector-rotation-screener">github</a>
+    <svg viewBox="0 0 32 32" width="16" height="16" style="vertical-align:middle;margin-right:6px" aria-label="Brian Beals"><rect width="32" height="32" rx="6" fill="#1E3A5F"/><text x="16" y="15" text-anchor="middle" dominant-baseline="central" fill="#fff" font-family="-apple-system,system-ui,sans-serif" font-size="16" font-weight="800" letter-spacing="-0.04em">BB</text></svg>© {year} Brian Beals · <a href="https://brianbeals.com">brianbeals.com</a> · <a href="https://github.com/brianbeals/sector-rotation-screener">github</a>
   </footer>
 </body>
 </html>
@@ -364,11 +393,11 @@ def _build_index_html(today: str) -> str:
     content = f"""    <h1>Sector Rotation Screen</h1>
     <p class="subtitle">A weekly methodology demo. Open source, transparent rules.</p>
 
-    <p>Every Sunday afternoon, GitHub Actions runs an 11-SPDR-ETF screen against three signals (seasonality, economic-cycle fit, and relative strength vs SPY), runs a 15-year backtest, and asks Anthropic's Claude for a brief commentary on what the output said.</p>
+    <p>Every Sunday afternoon, GitHub Actions runs an 11-SPDR-ETF screen against three signals (seasonality, economic-cycle fit, and relative strength vs SPY), runs a backtest anchored to May 2011, and asks Anthropic's Claude for a brief commentary on what the output said.</p>
 
     {_DISCLAIMER_HTML}
 
-    <h2>This week — {pretty}</h2>
+    <h2>This week: {pretty}</h2>
     <div class="cards">
       <a href="weekly/latest/dashboard.html" class="card">
         <h3>Dashboard ↗</h3>
@@ -455,7 +484,7 @@ def _build_summary_html(today: str, commentary_md: str) -> str:
     )
     content = f"""    <a href="../../" class="back">← Sector Rotation Screen home</a>
 
-    <h1>Weekly Commentary — {pretty}</h1>
+    <h1>Weekly Commentary: {pretty}</h1>
 
     {_DISCLAIMER_HTML}
 
@@ -474,7 +503,7 @@ def _build_summary_html(today: str, commentary_md: str) -> str:
     </p>
 """
     return _wrap_in_page(
-        title=f"Weekly Commentary — {pretty}",
+        title=f"Weekly Commentary: {pretty}",
         description=f"Anthropic's Claude commentary on the {pretty} sector rotation screen output. Not financial advice.",
         content=content,
         year=year,

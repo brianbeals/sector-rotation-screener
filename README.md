@@ -1,6 +1,6 @@
 # Sector Rotation Screener
 
-Screens the 11 SPDR sector ETFs against three signals: seasonality, economic-cycle fit, and relative strength vs SPY. Produces a Buy / Hold / Avoid composite. Backtests the strategy 15 years against SPY.
+Screens the 11 SPDR sector ETFs against three signals: seasonality, economic-cycle fit, and relative strength vs SPY. Produces a Buy / Hold / Avoid composite. Backtests the strategy against SPY since May 2011.
 
 Outputs an Excel workbook and a single-page HTML dashboard.
 <img alt="Sector Rotation dashboard — weekly Buy/Hold/Avoid composite across 11 SPDR sector ETFs, with macro context and an honesty banner when the strategy lags SPY" src="https://github.com/user-attachments/assets/6e4bb468-6665-4415-bf3d-7437c6c2afec" />
@@ -39,7 +39,7 @@ cp .env.example .env
 
 ```bash
 python screener.py                # full run with backtest
-python screener.py --no-backtest  # faster, skip the 15-year backtest
+python screener.py --no-backtest  # faster, skip the backtest
 ```
 
 Outputs land in `outputs/SectorScreen_YYYY-MM-DD.{xlsx,html}`.
