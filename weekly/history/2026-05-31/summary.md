@@ -6,9 +6,25 @@
 
 ---
 
-## Commentary unavailable
+## What the screen said this week
 
-Claude commentary failed for this run: `Error code: 401 - {'type': 'error', 'error': {'type': 'authentication_error', 'message': 'invalid x-api-key'}, 'request_id': 'req_011CbbNjYUaDbkh3ntYexyMr'}`. The dashboard is still published below; the methodology and underlying scores are unchanged.
+As of 2026-05-31, the screen classifies the environment as **mid-cycle**. The reasoning comes from two macro signals: industrial production (INDPRO) growing at +1.4% year-over-year — sitting inside the 0.0% to 4.0% band the rule set treats as steady expansion — and a positive yield curve spread of +0.46. Together the rule set reads these as "steady expansion" rather than early recovery or late-cycle stress.
+
+Technology (XLK) topped the composite at 93.8, the only sector with a **Buy** signal under this rule set (Buy ≥ 65). Its score is broad-based: strong seasonality (82.0), a perfect cycle-fit reading (100.0), and dominant relative strength (RS 98.0, with a +27.26% three-month relative move). Relative strength here measures price performance versus the broader sector universe. Everything else lands in **Hold** territory, led by Communications (59.3) and a tightly clustered middle of Materials, Energy, Industrials, Real Estate, and Consumer Discretionary in the low-to-mid 40s.
+
+Four sectors carry **Avoid** signals (≤ 40): Financials (35.8), Healthcare (35.7), Consumer Staples (33.1), and Utilities (31.0). These share weak relative strength and, for the defensives, lower cycle-fit scores that the rule set assigns in mid-cycle.
+
+## Things worth noticing
+
+The gap between XLK and the rest is the standout feature this week — a ~34-point spread between first and second place. Relative strength is doing much of that work, since it carries the heaviest weight (40%).
+
+Communications (XLC) is an interesting case of internal divergence: it scores high on seasonality (80.9) and cycle fit (100.0), yet its relative strength is just 12.6 with a –12.26% three-month figure. The composite reconciles these into a middling Hold. Note also the **"thin sample"** flag on XLC's seasonality — meaning that score rests on relatively few historical observations and is less statistically reliable.
+
+Several defensives (Healthcare, Staples, Utilities) show decent seasonality scores in the 50s-60s but rank near the bottom overall, dragged down by weak relative strength and lower cycle fit. That illustrates how a single strong component can be outweighed by the others.
+
+## Methodology reminder
+
+The composite is a weighted sum: **Seasonality 30% + Cycle Fit 30% + Relative Strength 40%**, scaled 0-100. Lookahead bias in the backtest is controlled using FRED ALFRED point-in-time vintages, so each historical decision uses only data that was actually available then. The backtest result (Strategy +257.75% vs SPY +639.48% — i.e., it did *not* beat buy-and-hold net of costs over this window) is a property of this specific rule set, not a forecast of anything.
 
 ---
 
