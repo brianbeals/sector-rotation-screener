@@ -107,3 +107,7 @@ First time, macOS may block the script. Allow it via **System Settings → Priva
 ## License
 
 MIT. See [LICENSE](LICENSE).
+
+---
+
+<img src="https://raw.githubusercontent.com/brianbeals/brianbeals/main/assets/bb-mark.png" alt="BB" width="16" valign="middle"> © Brian Beals · brianbeals.com
