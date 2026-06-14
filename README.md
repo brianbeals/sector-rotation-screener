@@ -21,7 +21,7 @@ If the weekly links 404, the first scheduled run hasn't happened yet. Static ref
 
 ## Why this exists
 
-Sector rotation isn't an investment thesis I'm pitching. It's a testbed for the kind of analytical workflow I'd build for a CIO or CDO who wants to evaluate macro exposures across business units: ingest data, score against multiple signals, output something humans can read, backtest the methodology before trusting it.
+Sector rotation isn't an investment thesis I'm pitching. It's a testbed for an analytical workflow that can be applied to other multi-signal decisions: ingest data, make the scoring visible, produce something humans can use, and test the methodology historically.
 
 The same pattern works for portfolio companies, supply-chain risk, customer-segment health, or any question where "let's score it against multiple signals and see how that would have played out historically" beats gut feel.
 
