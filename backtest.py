@@ -89,13 +89,18 @@ def _month_return(close: pd.Series, start: pd.Timestamp, end: pd.Timestamp) -> f
 
 def run_backtest(prices: Dict[str, pd.DataFrame],
                  vintage_macro: Dict[str, pd.DataFrame],
-                 years: int = config.BACKTEST_YEARS) -> Tuple[pd.DataFrame, Dict[str, float]]:
-    """Run the walk-forward backtest. Returns (monthly_df, summary)."""
+                 years: int = config.BACKTEST_YEARS,
+                 end_date=None) -> Tuple[pd.DataFrame, Dict[str, float]]:
+    """Run the walk-forward backtest. Returns (monthly_df, summary).
+
+    `end_date` exists for deterministic historical tests; normal runs omit it
+    and continue to use today's date.
+    """
     spy = prices.get(config.BENCHMARK)
     if spy is None or spy.empty:
         raise RuntimeError("Need SPY price history for backtest.")
 
-    end = pd.Timestamp(date.today()).normalize()
+    end = pd.Timestamp(end_date if end_date is not None else date.today()).normalize()
     if getattr(config, "BACKTEST_START", None):
         start = pd.Timestamp(config.BACKTEST_START)
     else:
