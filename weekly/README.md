@@ -9,7 +9,7 @@ what the screen said.
 
 - **[Dashboard](latest/dashboard.html)**: score table, seasonality heatmap, RS bars, equity curve, cycle context
 - **[Commentary](latest/summary.html)**: an AI reading of this week's screen (or [as markdown](latest/summary.md))
-- Last run: 2026-06-14
+- Last run: 2026-06-21
 
 ## Disclaimer
 
