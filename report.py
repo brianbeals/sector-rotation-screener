@@ -241,9 +241,13 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
 <title>Sector Rotation Screen — {{ run_date }}</title>
 <style>
   :root {
+    color-scheme: light dark;
     --navy:#1E3A5F; --accent:#2E86C1; --card:#D6EAF8;
     --bg:#F4F6F9; --body:#1A1A2A;
     --win:#1E8449; --risk:#C0392B; --caution:#D4AC0D;
+    --paper:#ffffff; --headtx:#1E3A5F; --ink2:#333; --ink3:#555; --lbl:#777;
+    --hair:#eef2f6; --tint:#f7faff; --zebra:#fbfcfd;
+    --axis:rgba(0,0,0,0.2); --spyline:#1E3A5F;
   }
   * { box-sizing: border-box; }
   body { margin: 0; padding: 0; background: var(--bg); color: var(--body);
@@ -262,10 +266,10 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
   }
   .banner.warn { background: var(--risk); color: #fff; }
   .banner.tax  { background: var(--caution); color: #1A1A2A; }
-  .banner.note { background: #fff; color: #1A1A2A;
+  .banner.note { background: var(--paper); color: var(--body);
                  border-left: 4px solid var(--accent); }
   .phase-card {
-    background: #fff; border-radius: 8px; padding: 18px 22px; margin-top: 16px;
+    background: var(--paper); border-radius: 8px; padding: 18px 22px; margin-top: 16px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     display: grid; grid-template-columns: auto 1fr; gap: 18px; align-items: center;
   }
@@ -275,26 +279,26 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
     min-width: 130px; text-align: center;
   }
   .phase-badge.override { background: var(--caution); color: #1A1A2A; }
-  .phase-why { color: #333; line-height: 1.5; }
-  .phase-inputs { margin-top: 14px; font-size: 13px; color: #444;
+  .phase-why { color: var(--ink2); line-height: 1.5; }
+  .phase-inputs { margin-top: 14px; font-size: 13px; color: var(--ink2);
     display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-  .phase-inputs .label { color: #777; font-size: 11px; text-transform: uppercase;
+  .phase-inputs .label { color: var(--lbl); font-size: 11px; text-transform: uppercase;
     letter-spacing: 0.5px; }
-  .phase-inputs .val { color: var(--navy); font-size: 17px; font-weight: 600; }
-  .phase-inputs .delta { color: #555; font-size: 12px; }
+  .phase-inputs .val { color: var(--headtx); font-size: 17px; font-weight: 600; }
+  .phase-inputs .delta { color: var(--ink3); font-size: 12px; }
   h2.section {
     background: var(--navy); color: #fff; padding: 10px 16px; margin: 22px 0 12px 0;
     border-radius: 6px; font-size: 16px; font-weight: 600;
   }
-  table { width: 100%; border-collapse: collapse; background: #fff;
+  table { width: 100%; border-collapse: collapse; background: var(--paper);
           border-radius: 8px; overflow: hidden;
           box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
   th { background: var(--accent); color: #fff; padding: 10px 8px; text-align: left;
        cursor: pointer; user-select: none; font-size: 13px; font-weight: 600; }
   th.num, td.num { text-align: right; }
   th:hover { background: #2575a8; }
-  td { padding: 9px 8px; border-bottom: 1px solid #eef2f6; font-size: 14px; }
-  tr:nth-child(even) td { background: #fbfcfd; }
+  td { padding: 9px 8px; border-bottom: 1px solid var(--hair); font-size: 14px; }
+  tr:nth-child(even) td { background: var(--zebra); }
   tr:hover td { background: var(--card); }
   .signal { display: inline-block; padding: 3px 10px; border-radius: 4px;
             font-weight: 600; font-size: 12px; color: #fff; }
@@ -307,38 +311,46 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
   .pill-hold { background: var(--caution); color: #1A1A2A; }
   .pill-avoid { background: var(--risk); }
   .thin-flag { color: var(--caution); font-weight: 600; cursor: help; }
-  .heatmap { width: 100%; border-collapse: collapse; background: #fff;
+  .heatmap { width: 100%; border-collapse: collapse; background: var(--paper);
              box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-radius: 8px; overflow: hidden; }
   .heatmap th, .heatmap td { padding: 8px 6px; text-align: center;
-                              font-size: 12px; border-bottom: 1px solid #eef2f6; }
+                              font-size: 12px; border-bottom: 1px solid var(--hair); }
   .heatmap th { background: var(--accent); color: #fff; }
-  .heatmap td.row-label { text-align: left; font-weight: 600; color: var(--navy);
-                          background: #f7faff; }
-  .legend { font-size: 12px; color: #555; margin-top: 6px; }
-  .rs-bars { background: #fff; border-radius: 8px; padding: 16px;
+  .heatmap td.row-label { text-align: left; font-weight: 600; color: var(--headtx);
+                          background: var(--tint); }
+  .legend { font-size: 12px; color: var(--ink3); margin-top: 6px; }
+  .rs-bars { background: var(--paper); border-radius: 8px; padding: 16px;
              box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
   .rs-row { display: grid; grid-template-columns: 80px 1fr 80px;
             align-items: center; gap: 10px; padding: 4px 0; font-size: 13px; }
-  .rs-bar { background: #eef2f6; border-radius: 3px; height: 18px; position: relative; }
+  .rs-bar { background: var(--hair); border-radius: 3px; height: 18px; position: relative; }
   .rs-bar .fill { position: absolute; top: 0; bottom: 0; }
   .rs-bar .fill.pos { background: var(--win); left: 50%; }
   .rs-bar .fill.neg { background: var(--risk); right: 50%; }
   .rs-bar .axis { position: absolute; left: 50%; top: 0; bottom: 0; width: 1px;
-                  background: rgba(0,0,0,0.2); }
+                  background: var(--axis); }
   .equity-card {
-    background: #fff; border-radius: 8px; padding: 16px 20px;
+    background: var(--paper); border-radius: 8px; padding: 16px 20px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   }
   .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr);
                 gap: 10px; margin-bottom: 12px; }
-  .stat { background: #f7faff; border-radius: 6px; padding: 10px 12px; }
-  .stat .lbl { color: #777; font-size: 11px; text-transform: uppercase;
+  .stat { background: var(--tint); border-radius: 6px; padding: 10px 12px; }
+  .stat .lbl { color: var(--lbl); font-size: 11px; text-transform: uppercase;
                letter-spacing: 0.5px; }
-  .stat .val { color: var(--navy); font-size: 17px; font-weight: 700;
+  .stat .val { color: var(--headtx); font-size: 17px; font-weight: 700;
                margin-top: 4px; }
-  .stat .sub { color: #555; font-size: 12px; margin-top: 2px; }
-  footer { text-align: center; color: #888; font-size: 12px; margin: 28px 0 12px;
+  .stat .sub { color: var(--ink3); font-size: 12px; margin-top: 2px; }
+  footer { text-align: center; color: var(--lbl); font-size: 12px; margin: 28px 0 12px;
            line-height: 1.6; }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:#0F1822; --body:#E6EDF3; --card:#1C3350;
+      --paper:#16202B; --headtx:#A9C9E8; --ink2:#C4D2DE; --ink3:#9FB4C4;
+      --lbl:#8CA3B5; --hair:#2A3B4D; --tint:#132433; --zebra:#182533;
+      --axis:rgba(255,255,255,0.25); --spyline:#8FB3D9;
+    }
+  }
 </style>
 </head>
 <body>
@@ -597,19 +609,17 @@ document.querySelectorAll("#scores th").forEach((th, i) => {
 
 
 def _heatmap_color(value: float):
+    # Alpha-blended over the card background so cells read correctly in both
+    # light and dark mode (identical to the old white-anchored ramp on white).
     if value is None or (isinstance(value, float) and math.isnan(value)):
-        return "#f0f3f7", "#888"
+        return "rgba(136,152,168,0.12)", "inherit"
     t = max(-1.0, min(1.0, value / 0.04))
     if t >= 0:
-        r = int(255 - t * (255 - 30))
-        g = int(255 - t * (255 - 132))
-        b = int(255 - t * (255 - 73))
+        color = f"rgba(30,132,73,{t:.2f})"
     else:
-        r = int(255 - (-t) * (255 - 192))
-        g = int(255 - (-t) * (255 - 57))
-        b = int(255 - (-t) * (255 - 43))
-    text = "#ffffff" if abs(t) > 0.55 else "#1A1A2A"
-    return f"#{r:02x}{g:02x}{b:02x}", text
+        color = f"rgba(192,57,43,{-t:.2f})"
+    text = "#ffffff" if abs(t) > 0.55 else "inherit"
+    return color, text
 
 
 def _equity_svg(backtest_df: pd.DataFrame, width: int = 1080, height: int = 280) -> str:
@@ -652,23 +662,23 @@ def _equity_svg(backtest_df: pd.DataFrame, width: int = 1080, height: int = 280)
         x_ticks.append((yr, x(d)))
 
     svg = [f'<svg width="100%" viewBox="0 0 {width} {height}" xmlns="http://www.w3.org/2000/svg" style="display:block;">']
-    svg.append(f'<rect x="0" y="0" width="{width}" height="{height}" fill="white"/>')
+    svg.append(f'<rect x="0" y="0" width="{width}" height="{height}" fill="var(--paper)"/>')
     # gridlines
     for v, py in y_ticks:
-        svg.append(f'<line x1="{pad_l}" y1="{py:.1f}" x2="{pad_l+plot_w}" y2="{py:.1f}" stroke="#eef2f6" stroke-width="1"/>')
-        svg.append(f'<text x="{pad_l-6}" y="{py+4:.1f}" font-size="11" fill="#777" text-anchor="end">{v:.2f}</text>')
+        svg.append(f'<line x1="{pad_l}" y1="{py:.1f}" x2="{pad_l+plot_w}" y2="{py:.1f}" stroke="var(--hair)" stroke-width="1"/>')
+        svg.append(f'<text x="{pad_l-6}" y="{py+4:.1f}" font-size="11" fill="var(--lbl)" text-anchor="end">{v:.2f}</text>')
     for yr, px in x_ticks:
-        svg.append(f'<text x="{px:.1f}" y="{height-8}" font-size="11" fill="#777" text-anchor="middle">{yr}</text>')
+        svg.append(f'<text x="{px:.1f}" y="{height-8}" font-size="11" fill="var(--lbl)" text-anchor="middle">{yr}</text>')
 
-    svg.append(f'<path d="{path("spy_equity")}" fill="none" stroke="#1E3A5F" stroke-width="2" opacity="0.6"/>')
+    svg.append(f'<path d="{path("spy_equity")}" fill="none" stroke="var(--spyline)" stroke-width="2" opacity="0.7"/>')
     svg.append(f'<path d="{path("strategy_equity")}" fill="none" stroke="#2E86C1" stroke-width="2.5"/>')
 
     # Legend
     lg_x, lg_y = pad_l + 10, pad_t + 14
     svg.append(f'<rect x="{lg_x}" y="{lg_y-10}" width="14" height="3" fill="#2E86C1"/>')
-    svg.append(f'<text x="{lg_x+20}" y="{lg_y-2}" font-size="12" fill="#1A1A2A">Strategy</text>')
-    svg.append(f'<rect x="{lg_x+90}" y="{lg_y-10}" width="14" height="3" fill="#1E3A5F" opacity="0.6"/>')
-    svg.append(f'<text x="{lg_x+110}" y="{lg_y-2}" font-size="12" fill="#1A1A2A">SPY</text>')
+    svg.append(f'<text x="{lg_x+20}" y="{lg_y-2}" font-size="12" fill="var(--body)">Strategy</text>')
+    svg.append(f'<rect x="{lg_x+90}" y="{lg_y-10}" width="14" height="3" fill="var(--spyline)" opacity="0.7"/>')
+    svg.append(f'<text x="{lg_x+110}" y="{lg_y-2}" font-size="12" fill="var(--body)">SPY</text>')
     svg.append('</svg>')
     return "\n".join(svg)
 

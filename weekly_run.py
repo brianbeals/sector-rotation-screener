@@ -218,8 +218,12 @@ PAGE_SHELL = """<!DOCTYPE html>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600&display=swap" rel="stylesheet">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#1E3A5F" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0F1822" media="(prefers-color-scheme: dark)">
   <style>
     :root {{
+      color-scheme: light dark;
       --navy: #1E3A5F;
       --blue: #2E86C1;
       --bg: #F4F6F9;
@@ -228,6 +232,10 @@ PAGE_SHELL = """<!DOCTYPE html>
       --card: #FFFFFF;
       --warn-bg: #FEF3F2;
       --warn-border: #C0392B;
+      --warn-ink: #C0392B;
+      --head: #1E3A5F;
+      --code-bg: rgba(30,58,95,0.06);
+      --hairline: rgba(30,58,95,0.12);
     }}
     * {{ box-sizing: border-box; }}
     html, body {{ margin: 0; padding: 0; }}
@@ -243,7 +251,7 @@ PAGE_SHELL = """<!DOCTYPE html>
     }}
     h1, h2, h3 {{
       font-family: "Source Serif 4", Georgia, serif;
-      color: var(--navy);
+      color: var(--head);
       font-weight: 600;
       letter-spacing: -0.01em;
     }}
@@ -281,7 +289,7 @@ PAGE_SHELL = """<!DOCTYPE html>
       margin: 2rem 0;
       color: var(--text);
     }}
-    .disclaimer strong {{ color: var(--warn-border); }}
+    .disclaimer strong {{ color: var(--warn-ink); }}
     .cards {{
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -304,7 +312,7 @@ PAGE_SHELL = """<!DOCTYPE html>
       box-shadow: 0 4px 12px rgba(0,0,0,0.08);
       text-decoration: none;
     }}
-    .card h3 {{ color: var(--navy); margin-top: 0; }}
+    .card h3 {{ color: var(--head); margin-top: 0; }}
     .card p {{ color: var(--muted); margin-bottom: 0; font-size: 0.95rem; }}
     .back {{
       display: inline-block;
@@ -317,7 +325,7 @@ PAGE_SHELL = """<!DOCTYPE html>
     .commentary {{ font-size: 1.02rem; }}
     .commentary p {{ margin: 0 0 1rem; }}
     .commentary h2 {{ font-size: 1.4rem; margin: 2rem 0 0.75rem; }}
-    .commentary strong {{ color: var(--navy); }}
+    .commentary strong {{ color: var(--head); }}
     .attribution {{
       font-size: 0.85rem;
       color: var(--muted);
@@ -336,12 +344,25 @@ PAGE_SHELL = """<!DOCTYPE html>
     footer.site a {{ color: inherit; text-underline-offset: 3px; }}
     code {{
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      background: rgba(30,58,95,0.06);
+      background: var(--code-bg);
       padding: 0.1em 0.4em;
       border-radius: 3px;
       font-size: 0.92em;
     }}
-    hr {{ border: none; border-top: 1px solid rgba(30,58,95,0.12); margin: 2rem 0; }}
+    hr {{ border: none; border-top: 1px solid var(--hairline); margin: 2rem 0; }}
+    @media (prefers-color-scheme: dark) {{
+      :root {{
+        --bg: #0F1822;
+        --text: #E6EDF3;
+        --muted: #93A6B8;
+        --card: #16202B;
+        --head: #A9C9E8;
+        --warn-bg: #33150F;
+        --warn-ink: #F1948A;
+        --code-bg: rgba(169,201,232,0.12);
+        --hairline: #2A3B4D;
+      }}
+    }}
   </style>
 </head>
 <body>
