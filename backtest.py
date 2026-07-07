@@ -123,7 +123,8 @@ def run_backtest(prices: Dict[str, pd.DataFrame],
             prev = rebal_dates[i - 1]
             spy_ret = _month_return(spy_close, prev, asof)
             if not held:
-                strategy_ret = 0.0
+                # Park in SPY instead of cash to avoid drag in bull markets.
+                strategy_ret = spy_ret if not np.isnan(spy_ret) else 0.0
             else:
                 rets = []
                 for tk in held:

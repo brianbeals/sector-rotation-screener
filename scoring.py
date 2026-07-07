@@ -101,7 +101,26 @@ def rel_strength_scores(sector_prices: pd.DataFrame,
         w = config.RS_WEIGHTS[label]
         weighted += w * sub_score
         weight_sum += w
-    out["score"] = float(weighted / weight_sum) if weight_sum else 50.0
+    level_score = float(weighted / weight_sum) if weight_sum else 50.0
+
+    # RS inflection: compare last 4-week RS vs prior 4-week RS.
+    # A sector turning from negative to less-negative scores better than one
+    # that is already extended. Rewards early rotation, not momentum chasing.
+    inflection_score = 50.0
+    if len(s_close) >= 43 and len(b_close) >= 43:
+        recent_s = _trailing_return(s_close, 21)
+        recent_b = _trailing_return(b_close, 21)
+        prior_s  = _trailing_return(s_close.iloc[:-21], 21)
+        prior_b  = _trailing_return(b_close.iloc[:-21], 21)
+        if not any(np.isnan(v) for v in [recent_s, recent_b, prior_s, prior_b]):
+            recent_rs = recent_s - recent_b
+            prior_rs  = prior_s  - prior_b
+            inflection = recent_rs - prior_rs
+            inflection_score = float(50 + 50 * np.tanh(inflection / 0.05))
+    out["rs_inflection"] = inflection_score
+
+    iw = getattr(config, "RS_INFLECTION_WEIGHT", 0.0)
+    out["score"] = float((1 - iw) * level_score + iw * inflection_score)
     return out
 
 

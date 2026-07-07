@@ -218,6 +218,11 @@ DRILLDOWN_THRESHOLD = 55
 RS_WINDOWS_DAYS = {"1m": 21, "3m": 63, "6m": 126}
 RS_WEIGHTS      = {"1m": 0.25, "3m": 0.40, "6m": 0.35}
 
+# Weight given to RS inflection (rate-of-change) vs RS level in the final RS score.
+# 0.0 = pure level (old behavior), 1.0 = pure inflection.
+# 0.40 blends both: rewards sectors with improving RS even if absolute level is still weak.
+RS_INFLECTION_WEIGHT: float = 0.40
+
 
 # --- Position sizing & trading rules (drive backtest, not just cosmetics) ----
 
