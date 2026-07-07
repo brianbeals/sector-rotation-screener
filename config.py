@@ -192,9 +192,9 @@ CYCLE_PHASE_OVERRIDE: Optional[str] = None
 
 @dataclass
 class Weights:
-    seasonality:  float = 0.30
-    cycle_fit:    float = 0.30
-    rel_strength: float = 0.40
+    seasonality:  float = 0.25
+    cycle_fit:    float = 0.40
+    rel_strength: float = 0.35
 
     def normalize(self) -> "Weights":
         total = self.seasonality + self.cycle_fit + self.rel_strength
