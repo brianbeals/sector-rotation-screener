@@ -78,7 +78,8 @@ The Excel workbook has three sheets: **Sector Screen**, **Cycle Context**, and *
 
 **Scoring**
 
-- `WEIGHTS`: Seasonality / Cycle / RS (default 30 / 30 / 40)
+- `WEIGHTS`: Seasonality / Cycle / RS (current 25 / 40 / 35 — cycle fit weighted highest to surface early rotation signals)
+- `RS_INFLECTION_WEIGHT` (0.40): blends RS rate-of-change with RS level. Sectors whose momentum is *improving* score higher even if absolute RS is still weak, catching rotation earlier.
 - `SIGNAL_BUY` (65), `SIGNAL_AVOID` (40)
 - `SEASONALITY_TRUST_YEARS` (10): under this, sectors get a thin-sample warning
 
@@ -89,6 +90,7 @@ The Excel workbook has three sheets: **Sector Screen**, **Cycle Context**, and *
 **Backtest**
 
 - `BACKTEST_YEARS` (15)
+- Cash periods: when no sector clears the Buy threshold, the backtest parks in SPY rather than cash, avoiding drag in sustained bull markets
 
 ## Lookahead bias
 
