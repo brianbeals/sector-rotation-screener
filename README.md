@@ -74,13 +74,13 @@ The Excel workbook has three sheets: **Sector Screen**, **Cycle Context**, and *
 
 - `CYCLE_PHASE_OVERRIDE`: set to `"Mid-cycle"` etc. to force the phase
 - `CYCLE_THRESHOLDS`: PMI levels and curve inversion line
-- `CYCLE_FAVORED`: sector mapping per phase
+- `CYCLE_FAVORED`: sector mapping per phase. Mid-cycle: XLK, XLC, XLF (Financials added per standard rotation playbook)
 
 **Scoring**
 
 - `WEIGHTS`: Seasonality / Cycle / RS (current 25 / 40 / 35 — cycle fit weighted highest to surface early rotation signals)
 - `RS_INFLECTION_WEIGHT` (0.40): blends RS rate-of-change with RS level. Sectors whose momentum is *improving* score higher even if absolute RS is still weak, catching rotation earlier.
-- `SIGNAL_BUY` (65), `SIGNAL_AVOID` (40)
+- `SIGNAL_BUY` (60), `SIGNAL_AVOID` (40) — lower Buy threshold reduces cash/fallback periods, keeping the strategy more active
 - `SEASONALITY_TRUST_YEARS` (10): under this, sectors get a thin-sample warning
 
 **Tax**

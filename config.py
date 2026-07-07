@@ -155,7 +155,7 @@ BACKTEST_START = "2011-05-31"
 # Standard rotation playbook.
 CYCLE_FAVORED: Dict[str, List[str]] = {
     "Early-cycle": ["XLY", "XLF", "XLI"],
-    "Mid-cycle":   ["XLK", "XLC"],
+    "Mid-cycle":   ["XLK", "XLC", "XLF"],
     "Late-cycle":  ["XLE", "XLB", "XLV"],
     "Recession":   ["XLP", "XLU", "XLV"],
 }
@@ -204,7 +204,7 @@ class Weights:
 WEIGHTS = Weights().normalize()
 
 # 0-100 scale signal thresholds.
-SIGNAL_BUY   = 65
+SIGNAL_BUY   = 60
 SIGNAL_AVOID = 40
 
 # Drill-down trigger: run sub-sector analysis for sectors at or above this
