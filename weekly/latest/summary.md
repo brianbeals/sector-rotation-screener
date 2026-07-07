@@ -8,23 +8,21 @@
 
 ## What the screen said this week
 
-The screen classified the current environment as mid-cycle, based on industrial production (INDPRO) growing at 1.7% year over year, which sits inside the 0.0% to 4.0% band the rule set treats as steady expansion. The yield curve reading of +0.35 (a positive spread, meaning longer-term rates sit above shorter-term ones) reinforced that classification. In plain terms, the macro inputs pointed to ongoing growth without signs of contraction.
+The screen classified the current environment as mid-cycle. That call comes from industrial production (INDPRO) growing at +1.7% year over year, which sits inside the 0.0% to 4.0% band the rule set treats as steady expansion, combined with a positive yield curve reading of +0.35. In plain terms, the rules read the macro backdrop as ongoing, unremarkable growth rather than an early rebound or a late-cycle peak.
 
-Two sectors carried a Buy signal this week: Technology (XLK) at a composite of 88.0 and Communications (XLC) at 66.2. Both received maximum cycle fit scores of 100.0, meaning the rule set treats them as well aligned with a mid-cycle phase. Technology's high score was broad based, pairing that cycle fit with strong seasonality (82.4) and the top relative strength reading (78.3, with three-month RS of +18.03%). Communications leaned almost entirely on cycle fit and seasonality, since its relative strength was weak (16.3).
-
-No sector fell to the Avoid threshold of 40 or below this week. The lowest composite was Utilities (XLU) at 45.2, held down by a soft cycle fit of 35.0 and the weakest three-month relative strength in the group at -14.17%.
+Communications (XLC) and Technology (XLK) tied at the top with composite scores of 77.1, both flagged Buy. Their scores are driven largely by a maximum cycle-fit reading of 100.0, meaning the rule set considers these sectors well aligned with a mid-cycle phase, alongside strong seasonality. Real Estate (XLRE) and Industrials (XLI) also cleared the Buy threshold of 65, helped by high seasonality and, for Industrials, the strongest relative strength score in the group at 71.7. Relative strength (RS) here measures recent price momentum versus peers. No sector triggered an Avoid signal this week, as the lowest composite, Energy (XLE) at 49.5, stayed above the 40 cutoff.
 
 ## Things worth noticing
 
-The Communications reading is worth flagging. Its composite of 66.2 crossed the Buy line largely on cycle fit and seasonality, yet its price-based relative strength was low (16.3) and its three-month RS was negative at -13.94%. That is a case where the model's cycle-and-calendar components outweighed weak recent price action. Its seasonality score also carried a "thin sample" note, meaning it rests on relatively few historical observations and should be read with extra caution.
+There is a visible split between cycle fit and price action at the top. XLC carries a perfect cycle-fit score yet its 3-month relative strength is -13.76%, the weakest among the four Buy names. So a sector can rank highly on the composite because of cycle and seasonality inputs while its recent price trend has been soft. XLK is the opposite case, pairing the same cycle score with a positive +18.00% 3-month figure.
 
-More broadly, seasonality scores were high across almost the entire board (many in the 70s and 80s), so that component did little to separate sectors this week. The real dispersion came from relative strength, where readings ranged from Technology's +18.03% three-month figure down to Energy's -22.87%.
+XLC's seasonality score is flagged "thin sample," meaning the seasonal component rests on relatively few historical observations and deserves extra skepticism. Worth noting too that nearly every sector shows negative 3-month relative strength, with only XLK positive, yet four sectors still register Buy signals. That is a reminder that composite ranks are relative within the group, not a statement about absolute price direction.
 
-It is also notable that the backtest itself underperformed. Since May 2011, net of 10 bps trading cost, the strategy returned +370.11% versus SPY's +626.21%.
+Finally, the backtest since May 2011 shows the strategy up +410.21% versus SPY up +626.21% net of 10 bps trading cost, so this rule set did not beat a simple SPY hold over that window.
 
 ## Methodology reminder
 
-The composite is the weighted sum of seasonality (25%), cycle fit (40%), and relative strength (35%). Lookahead bias in the backtest is controlled using FRED ALFRED point-in-time data vintages, so each historical decision uses only data available then. The backtest figure is a property of this specific rule set, not a forecast of future results.
+The composite is the weighted sum of Seasonality (25%), Cycle Fit (40%), and Relative Strength (35%). Lookahead bias in the backtest is controlled using FRED ALFRED data vintages, so each historical decision uses only data available at that time. The backtest figures are a property of this specific rule set, not a forecast of future results.
 
 ---
 
