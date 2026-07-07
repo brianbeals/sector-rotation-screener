@@ -155,7 +155,7 @@ BACKTEST_START = "2011-05-31"
 # Standard rotation playbook.
 CYCLE_FAVORED: Dict[str, List[str]] = {
     "Early-cycle": ["XLY", "XLF", "XLI"],
-    "Mid-cycle":   ["XLK", "XLC", "XLF"],
+    "Mid-cycle":   ["XLK", "XLC"],
     "Late-cycle":  ["XLE", "XLB", "XLV"],
     "Recession":   ["XLP", "XLU", "XLV"],
 }
@@ -239,8 +239,9 @@ REBALANCE_FREQUENCY: str = "monthly"   # "monthly" | "quarterly"
 MIN_SCORE_TO_HOLD: float = 50.0
 
 # One-way trading cost in basis points, applied per dollar traded at rebalance.
-# 10 bps is realistic for ETF retail on major brokerages (Schwab/Fidelity).
-TRADE_COST_BPS: float = 10.0
+# Commission-free era: 0 commissions at major brokers. ~1 bp covers bid-ask
+# spread on liquid SPDR ETFs. Set to 0 to model pure zero-cost trading.
+TRADE_COST_BPS: float = 1.0
 
 
 # --- Tax-aware mode -----------------------------------------------------------

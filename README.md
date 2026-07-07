@@ -68,13 +68,13 @@ The Excel workbook has three sheets: **Sector Screen**, **Cycle Context**, and *
 - `MAX_POSITIONS` (default 3)
 - `REBALANCE_FREQUENCY` (`"monthly"`)
 - `MIN_SCORE_TO_HOLD` (50.0)
-- `TRADE_COST_BPS` (25)
+- `TRADE_COST_BPS` (1.0) — commission-free era; ~1 bp covers bid-ask spread on liquid SPDR ETFs
 
 **Cycle**
 
 - `CYCLE_PHASE_OVERRIDE`: set to `"Mid-cycle"` etc. to force the phase
 - `CYCLE_THRESHOLDS`: PMI levels and curve inversion line
-- `CYCLE_FAVORED`: sector mapping per phase. Mid-cycle: XLK, XLC, XLF (Financials added per standard rotation playbook)
+- `CYCLE_FAVORED`: sector mapping per phase
 
 **Scoring**
 
