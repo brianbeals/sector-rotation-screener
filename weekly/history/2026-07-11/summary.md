@@ -8,23 +8,23 @@
 
 ## What the screen said this week
 
-The screen classified the current environment as mid-cycle, driven by industrial production (INDPRO) rising 1.7% year over year, which sits inside the rule set's 0.0% to 4.0% band for steady expansion, alongside a positive yield curve reading of +0.38 (the spread between longer and shorter dated Treasury rates). Together these placed the classification in the "steady expansion" bucket.
+The screen classified the current environment as **mid-cycle**, driven by industrial production (INDPRO) growing +1.7% year over year, which falls inside the 0.0% to 4.0% band the rule set treats as steady expansion. The yield curve reading of +0.38 (the spread between longer and shorter term rates being positive) reinforced that label. In this classification, the cycle-fit component rewards sectors historically aligned with steady expansion.
 
-Technology (XLK) topped the composite at 82.8, the only sector carrying a Buy signal under this rule set. Its score was broad-based: strong seasonality (85.7), maximum cycle fit (100.0), and the highest relative strength in the group (61.2, with three-month relative strength of +19.60%). Relative strength here measures recent price performance versus SPY, the S&P 500 ETF used as the benchmark. Communications (XLC) ranked second at 73.5 but was flagged Watch rather than Buy.
+Technology (XLK) topped the composite at 82.8 and was the only Buy signal. It combined a maximum cycle-fit score of 100, strong seasonality of 85.7, and the highest relative strength in the group (RS 61.2, with a trailing three-month relative move of +19.60%). Relative strength here measures how a sector is performing against SPY. Communications (XLC) came second at 73.5 and was flagged **Watch**: its cycle fit is 100 but relative strength sits at 37.1, below the 45 threshold, so under this rule set the cycle favors it while price action has not yet confirmed. Note the "thin sample" tag on its seasonality, meaning fewer historical weeks support that seasonal figure.
 
-The Watch flag on XLC reflects exactly what that label is designed to catch: cycle fit is high (100.0), but relative strength (37.1) sits below the 45 threshold, and its three-month relative strength is actually negative at -13.37%. In other words, the cycle framework favors it while price action has not confirmed. No sector fell to an Avoid signal this week, though Healthcare (42.2) and Energy (44.5) sat closest to that floor.
+No sectors triggered an Avoid (composite at or below 40). Healthcare (XLV) sat lowest at 42.2, weighed down by weak relative strength (23.8) and a lower cycle-fit score (35) for this phase.
 
 ## Things worth noticing
 
-The gap between XLK and everything else is worth registering. Technology combined the top RS reading with full cycle fit, while the middle of the table (Industrials, Financials, Consumer Discretionary) leaned on strong seasonality scores and moderate cycle fit but showed soft relative strength, with three-month figures all negative.
+Several sectors carry high seasonality scores yet middling composites. Real Estate (XLRE) posted the highest seasonality reading at 89.6 but landed mid-pack at 52.7, because its relative strength (29.6) and cycle fit (50) pulled the weighted total down. This illustrates how the 40% cycle weight and 35% RS weight can outrun a strong seasonal figure.
 
-Several sectors show a divergence between what the cycle model favors and what prices are doing. XLC is the clearest example: perfect cycle fit paired with sharply negative recent relative performance. Real Estate (XLRE) shows the highest seasonality reading in the table (89.6) yet one of the weaker RS scores (29.6), a reminder that a strong seasonal component alone does not lift a composite far.
+There is also a visible split between cycle-favored and price-confirmed sectors. XLC and XLK both score cycle fit of 100, but only XLK also shows leading relative strength. Most sectors below the top two show negative trailing three-month relative moves, so the composite ranking is being separated largely by relative strength this week rather than by cycle or seasonality, which are more clustered.
 
-Note the "thin sample" tag on XLC's seasonality. The sector has a shorter history in this ETF form, so its seasonality figure rests on fewer observations and deserves more caution than the others.
+The Buy-signal statistics are worth reading plainly: since May 2011, Buy calls beat SPY 51% of the time with an excess average of +0.05%. That is a narrow edge in the historical record, not a guarantee.
 
 ## Methodology reminder
 
-The composite is a weighted sum: Seasonality 25%, Cycle Fit 40%, Relative Strength 35%. Lookahead bias in the backtest is controlled using FRED ALFRED vintages, meaning each week sees only the macro data that was actually published as of that date. The backtest result since May 2011 is a property of this specific rule set applied to history, not a forecast of anything.
+The composite is the weighted sum of Seasonality (25%), Cycle Fit (40%), and Relative Strength (35%). Lookahead bias in the backtest is controlled using FRED ALFRED data vintages, meaning each week sees only the macro data that was actually available then. The backtest result of +636.32% is a property of this specific rule set applied to past data, not a forecast of future results.
 
 ---
 
