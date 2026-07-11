@@ -240,6 +240,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
 <head>
 <meta charset="utf-8">
 <title>Sector Rotation Screen — {{ run_date }}</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231E3A5F'/%3E%3Ctext x='16' y='15' text-anchor='middle' dominant-baseline='central' fill='white' font-family='system-ui' font-size='16' font-weight='800'%3EBB%3C/text%3E%3C/svg%3E">
 <style>
   :root {
     color-scheme: light dark;
@@ -345,6 +346,10 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
   .stat .sub { color: var(--ink3); font-size: 12px; margin-top: 2px; }
   footer { text-align: center; color: var(--lbl); font-size: 12px; margin: 28px 0 12px;
            line-height: 1.6; }
+  footer .sitelinks { margin-bottom: 8px; font-size: 12px; }
+  footer .sitelinks a { color: var(--accent); font-weight: 600; text-decoration: none; }
+  footer .sitelinks a:hover { text-decoration: underline; }
+  footer .byline { display: inline-flex; align-items: center; gap: 6px; }
   @media (prefers-color-scheme: dark) {
     :root {
       --bg:#0F1822; --body:#E6EDF3; --card:#1C3350;
@@ -502,9 +507,12 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
 </div>
 
 <footer>
-  Prepared by <a href="https://brianbeals.com" target="_blank" style="color:inherit;">Brian Beals</a> · {{ run_date_long }}<br>
-  Price data through {{ prices_through }} · FRED vintage {{ fred_vintage }}<br>
-  © {{ current_year }} Brian Beals · <a href="https://github.com/brianbeals/sector-rotation-screener" target="_blank" style="color:inherit;">github.com/brianbeals/sector-rotation-screener</a>
+  <div class="sitelinks"><a href="https://brianbeals.com">brianbeals.com</a> &middot;
+    <a href="https://brianbeals.com/writing">Writing</a> &middot;
+    <a href="https://weather.brianbeals.com">Marine Forecast</a> &middot;
+    <a href="https://github.com/brianbeals/sector-rotation-screener">GitHub</a></div>
+  <div class="byline"><svg viewBox="0 0 32 32" width="16" height="16" aria-label="Brian Beals"><rect width="32" height="32" rx="6" fill="#1E3A5F"/><text x="16" y="15" text-anchor="middle" dominant-baseline="central" fill="#fff" font-family="-apple-system,system-ui,sans-serif" font-size="16" font-weight="800" letter-spacing="-0.04em">BB</text></svg>&copy; Brian Beals &middot; brianbeals.com &middot; {{ run_date_long }}</div>
+  <div style="margin-top:8px;">Price data through {{ prices_through }} &middot; FRED vintage {{ fred_vintage }}</div>
 </footer>
 
 </div>
