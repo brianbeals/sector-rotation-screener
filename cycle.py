@@ -1,14 +1,21 @@
 """Economic cycle classifier — live and point-in-time.
 
-Phase logic uses INDPRO YoY growth (%) as the activity indicator and
-the 10Y-2Y Treasury spread as the curve signal:
+Phase logic uses INDPRO YoY growth (%) as the activity indicator, the 10Y-2Y
+Treasury spread as the curve LEVEL, and the 6-month change in that spread as a
+LEADING curve-DIRECTION signal so transitions can fire ahead of lagging INDPRO:
 
-  INDPRO YoY > 4%  and curve > 0  -> Early-cycle  (strong expansion)
-  INDPRO YoY > 0%  and curve > 0  -> Mid-cycle    (steady expansion)
-  curve <= 0       and YoY > 0%   -> Late-cycle   (expansion but curve inverted)
-  curve <= 0       and YoY <= 0%  -> Recession     (contraction + inversion)
-  INDPRO YoY < -2% (any curve)    -> Recession     (deep contraction)
-  default                          -> Mid-cycle
+  INDPRO YoY < -2% (any curve)       -> Recession    (deep contraction)
+  curve <= 0 and YoY <= 0%           -> Recession    (contraction + inversion)
+  curve steepening fast from a low   -> Early-cycle   (recovery leading INDPRO)
+    spread while YoY still positive
+  curve <= 0 and YoY > 0%            -> Late-cycle    (expansion but curve inverted)
+  curve flattening fast while still  -> Late-cycle    (late-cycle warning ahead of
+    positive and expanding                              INDPRO / before it inverts)
+  INDPRO YoY > 4% and curve > 0      -> Early-cycle   (strong expansion)
+  default                             -> Mid-cycle     (steady expansion)
+
+Curve direction reuses DGS10/DGS2 (no new FRED series). Thresholds live in
+config.CYCLE_THRESHOLDS (curve_flattening / curve_steepening / curve_low).
 """
 from __future__ import annotations
 
@@ -26,7 +33,11 @@ VALID_PHASES = ("Early-cycle", "Mid-cycle", "Late-cycle", "Recession")
 
 # --- Internal helpers --------------------------------------------------------
 
-def _decide(spread: Optional[float], indpro_yoy: Optional[float]) -> tuple:
+def _decide(spread: Optional[float], indpro_yoy: Optional[float],
+            spread_dir: Optional[float] = None) -> tuple:
+    """Classify the phase. `spread_dir` is the 6-month change in the 10Y-2Y spread
+    (positive = steepening, negative = flattening); None disables the leading rules
+    and reproduces the level-only logic."""
     th = config.CYCLE_THRESHOLDS
     if indpro_yoy is None or spread is None:
         return "Mid-cycle", "Insufficient FRED data; defaulting to Mid-cycle."
@@ -40,10 +51,28 @@ def _decide(spread: Optional[float], indpro_yoy: Optional[float]) -> tuple:
             f"Curve inverted ({spread:+.2f}) and INDPRO YoY {indpro_yoy:+.1f}% "
             f"<= {th['indpro_expansion']}%: both flashing recession."
         )
+    # LEADING: curve steepening fast from a low/inverted spread while activity is still
+    # positive -> early recovery, ahead of INDPRO turning up.
+    if (spread_dir is not None and spread_dir >= th["curve_steepening"]
+            and spread <= th["curve_low"]):
+        return "Early-cycle", (
+            f"Curve steepening {spread_dir:+.2f} over 6m from a low spread "
+            f"({spread:+.2f}) with INDPRO YoY {indpro_yoy:+.1f}% positive: "
+            f"recovery signal leading INDPRO."
+        )
     if spread <= th["yield_curve_inverted"]:
         return "Late-cycle", (
             f"Curve inverted ({spread:+.2f}) but INDPRO YoY {indpro_yoy:+.1f}% "
             f"still positive: expansion late, recession warning live."
+        )
+    # LEADING: curve flattening fast while still positive and expanding -> late-cycle
+    # warning before the curve actually inverts.
+    if (spread_dir is not None and spread_dir <= th["curve_flattening"]
+            and indpro_yoy > th["indpro_expansion"]):
+        return "Late-cycle", (
+            f"Curve flattening {spread_dir:+.2f} over 6m though still positive "
+            f"({spread:+.2f}) with INDPRO YoY {indpro_yoy:+.1f}%: late-cycle "
+            f"warning ahead of INDPRO."
         )
     if indpro_yoy > th["indpro_strong"]:
         return "Early-cycle", (
@@ -122,7 +151,7 @@ def classify(macro: Dict[str, pd.Series]) -> Dict[str, object]:
     spread_6m_change = _trend(spread_series, 6) if spread_series is not None else None
     indpro_3m_change = _trend(macro.get("INDPRO"), 3)
 
-    algo_phase, algo_why = _decide(spread, indpro_yoy)
+    algo_phase, algo_why = _decide(spread, indpro_yoy, spread_6m_change)
 
     override = config.CYCLE_PHASE_OVERRIDE
     if override and override in VALID_PHASES:
@@ -190,7 +219,14 @@ def classify_at_date(vintage: Dict[str, pd.DataFrame], asof: date) -> Dict[str, 
     indpro_yoy = _indpro_yoy_from_series(indpro_s)
     spread = (dgs10 - dgs2) if (dgs10 is not None and dgs2 is not None) else None
 
-    phase, why = _decide(spread, indpro_yoy)
+    # Curve direction (6-month change in the spread), point-in-time from the vintage series.
+    spread_series = None
+    if len(dgs10_s) and len(dgs2_s):
+        spread_series = (dgs10_s - dgs2_s).dropna()
+    spread_dir = _trend(spread_series, 6) if spread_series is not None and len(spread_series) else None
+
+    phase, why = _decide(spread, indpro_yoy, spread_dir)
     return {"phase": phase, "why": why, "inputs": {
-        "DGS10": dgs10, "DGS2": dgs2, "spread": spread, "INDPRO_YoY": indpro_yoy
+        "DGS10": dgs10, "DGS2": dgs2, "spread": spread,
+        "spread_6m_chg": spread_dir, "INDPRO_YoY": indpro_yoy
     }}

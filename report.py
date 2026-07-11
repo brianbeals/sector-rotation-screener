@@ -21,6 +21,7 @@ BG      = "F4F6F9"
 WIN     = "1E8449"
 RISK    = "C0392B"
 CAUTION = "D4AC0D"
+WATCH   = "2471A3"
 
 
 # --- Excel --------------------------------------------------------------------
@@ -87,7 +88,7 @@ def write_excel(rows: List[Dict],
         ws.cell(row=r, column=10, value=row["rs_6m"]).number_format = "0.00%"
         ws.cell(row=r, column=11, value=row["composite"]).number_format = "0.0"
         sig_cell = ws.cell(row=r, column=12, value=row["signal"])
-        color = {"Buy": WIN, "Avoid": RISK}.get(row["signal"], CAUTION)
+        color = {"Buy": WIN, "Avoid": RISK, "Watch": WATCH}.get(row["signal"], CAUTION)
         sig_cell.font = Font(bold=True, color="FFFFFF")
         sig_cell.fill = PatternFill("solid", fgColor=color)
         sig_cell.alignment = Alignment(horizontal="center")
@@ -244,7 +245,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
     color-scheme: light dark;
     --navy:#1E3A5F; --accent:#2E86C1; --card:#D6EAF8;
     --bg:#F4F6F9; --body:#1A1A2A;
-    --win:#1E8449; --risk:#C0392B; --caution:#D4AC0D;
+    --win:#1E8449; --risk:#C0392B; --caution:#D4AC0D; --watch:#2471A3;
     --paper:#ffffff; --headtx:#1E3A5F; --ink2:#333; --ink3:#555; --lbl:#777;
     --hair:#eef2f6; --tint:#f7faff; --zebra:#fbfcfd;
     --axis:rgba(0,0,0,0.2); --spyline:#1E3A5F;
@@ -305,6 +306,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
   .sig-Buy { background: var(--win); }
   .sig-Hold { background: var(--caution); color: #1A1A2A; }
   .sig-Avoid { background: var(--risk); }
+  .sig-Watch { background: var(--watch); }
   .pill { display: inline-block; padding: 3px 10px; border-radius: 4px;
           font-weight: 600; font-size: 12px; color: #fff; }
   .pill-buy { background: var(--win); }

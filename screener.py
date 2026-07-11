@@ -112,7 +112,7 @@ def run_screen(skip_backtest: bool = False) -> None:
     vintage = _vintage_info(prices, macro)
 
     # 4. Backtest
-    bt_df, bt_summary = None, None
+    bt_df, bt_summary, fwd_summary = None, None, None
     if not skip_backtest:
         log.info("Pulling FRED vintage history for backtest...")
         vintage_macro = data.fetch_macro_vintage()
@@ -122,6 +122,13 @@ def run_screen(skip_backtest: bool = False) -> None:
                  100 * bt_summary.get("strategy_cum", 0),
                  100 * bt_summary.get("spy_cum", 0),
                  bt_summary.get("beats_spy_net"))
+        log.info("Validating forward returns of Buy signals (6-8 week horizon)...")
+        _, fwd_summary = bt_mod.forward_return_validation(prices, vintage_macro)
+        log.info("Forward validation: %d Buy calls | mean fwd %.2f%% vs SPY %.2f%% | beat-SPY %.0f%%",
+                 fwd_summary.get("n_calls", 0),
+                 100 * fwd_summary.get("mean_fwd", 0.0),
+                 100 * fwd_summary.get("mean_spy_fwd", 0.0),
+                 100 * fwd_summary.get("hit_rate_vs_spy", 0.0))
 
     # 5. Drill-down: sub-sector ETFs + top holdings for Buy + near-Buy sectors
     dd_sectors = [r for r in rows if r["composite"] >= config.DRILLDOWN_THRESHOLD]
@@ -158,6 +165,7 @@ def run_screen(skip_backtest: bool = False) -> None:
             "vintage": vintage,
             "rows": rows,
             "backtest_summary": bt_summary or {},
+            "forward_validation": fwd_summary or {},
             "drilldown": dd_results,
         }, f, default=str, indent=2)
 
@@ -169,12 +177,15 @@ def run_screen(skip_backtest: bool = False) -> None:
     RESET = "\033[0m"
     BOLD = "\033[1m"
     DIM = "\033[2m"
+    CYAN = "\033[96m"
 
     def _sig(signal: str) -> str:
         if signal == "Buy":
             return f"{GREEN}{BOLD}{signal:>6}{RESET}"
         elif signal == "Avoid":
             return f"{RED}{signal:>6}{RESET}"
+        elif signal == "Watch":
+            return f"{CYAN}{signal:>6}{RESET}"
         return f"{YELLOW}{signal:>6}{RESET}"
 
     def _sig_short(signal: str) -> str:
@@ -182,6 +193,8 @@ def run_screen(skip_backtest: bool = False) -> None:
             return f"{GREEN}{BOLD}{signal:>5}{RESET}"
         elif signal == "Avoid":
             return f"{RED}{signal:>5}{RESET}"
+        elif signal == "Watch":
+            return f"{CYAN}{signal:>5}{RESET}"
         return f"{YELLOW}{signal:>5}{RESET}"
 
     print()
@@ -205,6 +218,12 @@ def run_screen(skip_backtest: bool = False) -> None:
               f"Strategy {bt_summary.get('strategy_cum',0)*100:+.2f}% / "
               f"SPY {bt_summary.get('spy_cum',0)*100:+.2f}% — "
               f"{'BEATS SPY' if bt_summary.get('beats_spy_net') else 'DOES NOT beat SPY'}")
+    if fwd_summary and fwd_summary.get("n_calls"):
+        print(f"Buy-signal forward returns ({'-'.join(str(h) for h in fwd_summary.get('horizons', []))}wk, "
+              f"{fwd_summary['n_calls']} calls): "
+              f"mean {fwd_summary.get('mean_fwd',0)*100:+.2f}% vs SPY {fwd_summary.get('mean_spy_fwd',0)*100:+.2f}% "
+              f"(excess {fwd_summary.get('mean_excess',0)*100:+.2f}%), "
+              f"beat SPY {fwd_summary.get('hit_rate_vs_spy',0)*100:.0f}% of the time")
 
     # Drill-down console output
     for parent_tk, dd in dd_results.items():

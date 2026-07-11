@@ -85,6 +85,30 @@ def _month_return(close: pd.Series, start: pd.Timestamp, end: pd.Timestamp) -> f
     return p_end / p_start - 1.0
 
 
+def _signals_at(prices: Dict[str, pd.DataFrame], spy: pd.DataFrame,
+                vintage_macro: Dict[str, pd.DataFrame], asof: pd.Timestamp):
+    """Point-in-time composite signals for every eligible sector as of `asof`,
+    using ONLY data <= asof, exactly as the live screen would have seen it.
+    Returns (phase, [ {ticker, composite, signal}, ... ])."""
+    cycle_info = cycle_mod.classify_at_date(vintage_macro, asof.date())
+    phase = cycle_info["phase"]
+    out = []
+    for tk in _eligible_tickers(asof):
+        df = prices.get(tk)
+        if df is None or df.empty:
+            continue
+        df_pit = df[df.index <= asof]
+        if df_pit.empty:
+            continue
+        bench_pit = spy[spy.index <= asof]
+        season = scoring.seasonality_score(df_pit, target_month=(asof.month % 12) + 1, asof=asof)
+        cf = scoring.cycle_fit_score(tk, phase)
+        rs = scoring.rel_strength_scores(df_pit, bench_pit, asof=asof)
+        comp = scoring.composite_signal(season["score"], cf["score"], rs["score"])
+        out.append({"ticker": tk, "composite": comp["composite"], "signal": comp["signal"]})
+    return phase, out
+
+
 # --- Main loop ---------------------------------------------------------------
 
 def run_backtest(prices: Dict[str, pd.DataFrame],
@@ -135,27 +159,7 @@ def run_backtest(prices: Dict[str, pd.DataFrame],
                 strategy_ret = float(sum(rets))
 
         # Pick next month's holdings using data <= asof.
-        cycle_info = cycle_mod.classify_at_date(vintage_macro, asof.date())
-        phase = cycle_info["phase"]
-
-        candidates = []
-        for tk in _eligible_tickers(asof):
-            df = prices.get(tk)
-            if df is None or df.empty:
-                continue
-            df_pit = df[df.index <= asof]
-            if df_pit.empty:
-                continue
-            bench_pit = spy[spy.index <= asof]
-            season = scoring.seasonality_score(df_pit, target_month=(asof.month % 12) + 1, asof=asof)
-            cf = scoring.cycle_fit_score(tk, phase)
-            rs = scoring.rel_strength_scores(df_pit, bench_pit, asof=asof)
-            comp = scoring.composite_signal(season["score"], cf["score"], rs["score"])
-            candidates.append({
-                "ticker": tk,
-                "composite": comp["composite"],
-                "signal": comp["signal"],
-            })
+        phase, candidates = _signals_at(prices, spy, vintage_macro, asof)
 
         # Filter to Buys above MIN_SCORE_TO_HOLD, take top N
         passing = [c for c in candidates
@@ -228,3 +232,94 @@ def _summarize(df: pd.DataFrame) -> Dict[str, float]:
     out["years"] = years
     out["months"] = n
     return out
+
+
+# --- Forward-return validation of Buy signals --------------------------------
+# Scores signal QUALITY directly: when the screen said "Buy", did that sector
+# actually lead price over the next ~6-8 weeks? This is a cleaner read on
+# early-rotation detection than the strategy's cumulative vs SPY, because it is
+# not muddied by position sizing, top-N selection, or turnover cost.
+
+def _forward_return(close: pd.Series, asof: pd.Timestamp, weeks_ahead: int) -> float:
+    """Total return from the last close <= asof to the last close <= asof + N weeks."""
+    target = asof + pd.Timedelta(weeks=weeks_ahead)
+    pre = close[close.index <= asof]
+    post = close[close.index <= target]
+    if pre.empty or post.empty:
+        return float("nan")
+    p0, p1 = float(pre.iloc[-1]), float(post.iloc[-1])
+    if p0 <= 0:
+        return float("nan")
+    return p1 / p0 - 1.0
+
+
+def _avg_forward_return(close: pd.Series, asof: pd.Timestamp,
+                        horizons: Tuple[int, ...]) -> float:
+    """Average forward return across the horizon weeks (the 6-8 week window)."""
+    vals = [_forward_return(close, asof, h) for h in horizons]
+    vals = [v for v in vals if not np.isnan(v)]
+    return float(np.mean(vals)) if vals else float("nan")
+
+
+def forward_return_validation(prices: Dict[str, pd.DataFrame],
+                              vintage_macro: Dict[str, pd.DataFrame],
+                              horizons_weeks: Tuple[int, ...] = (6, 7, 8),
+                              years: int = config.BACKTEST_YEARS,
+                              end_date=None) -> Tuple[pd.DataFrame, Dict[str, float]]:
+    """Walk weekly through history, recompute point-in-time signals, and for every
+    sector flagged Buy record its average forward return over `horizons_weeks`
+    against SPY's over the same window.
+
+    Returns (per_call_df, summary). summary keys: n_calls, weeks_evaluated,
+    mean_fwd, mean_spy_fwd, mean_excess, hit_rate_vs_spy, hit_rate_positive.
+    """
+    spy = prices.get(config.BENCHMARK)
+    if spy is None or spy.empty:
+        raise RuntimeError("Need SPY price history for forward-return validation.")
+
+    end = pd.Timestamp(end_date if end_date is not None else date.today()).normalize()
+    if getattr(config, "BACKTEST_START", None):
+        start = pd.Timestamp(config.BACKTEST_START)
+    else:
+        start = end - pd.DateOffset(years=years)
+
+    weeks = pd.date_range(start, end, freq="W-FRI")
+    spy_close = _close(spy)
+    max_h = max(horizons_weeks)
+
+    records: List[Dict] = []
+    weeks_evaluated = 0
+    for asof in weeks:
+        # Only judge weeks where the full forward window has actually elapsed.
+        if asof + pd.Timedelta(weeks=max_h) > end:
+            break
+        _, cands = _signals_at(prices, spy, vintage_macro, asof)
+        buys = [c["ticker"] for c in cands if c["signal"] == "Buy"]
+        if not buys:
+            continue
+        spy_fwd = _avg_forward_return(spy_close, asof, horizons_weeks)
+        if np.isnan(spy_fwd):
+            continue
+        weeks_evaluated += 1
+        for tk in buys:
+            fwd = _avg_forward_return(_close(prices.get(tk, pd.DataFrame())), asof, horizons_weeks)
+            if np.isnan(fwd):
+                continue
+            records.append({
+                "date": asof.date(), "ticker": tk,
+                "fwd_return": fwd, "spy_fwd_return": spy_fwd, "excess": fwd - spy_fwd,
+            })
+
+    per_call = pd.DataFrame(records)
+    summary: Dict[str, float] = {
+        "horizons": list(horizons_weeks),
+        "weeks_evaluated": weeks_evaluated,
+        "n_calls": int(len(per_call)),
+    }
+    if not per_call.empty:
+        summary["mean_fwd"]          = float(per_call["fwd_return"].mean())
+        summary["mean_spy_fwd"]      = float(per_call["spy_fwd_return"].mean())
+        summary["mean_excess"]       = float(per_call["excess"].mean())
+        summary["hit_rate_vs_spy"]   = float((per_call["excess"] > 0).mean())
+        summary["hit_rate_positive"] = float((per_call["fwd_return"] > 0).mean())
+    return per_call, summary

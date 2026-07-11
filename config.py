@@ -180,6 +180,12 @@ CYCLE_THRESHOLDS = {
     "indpro_expansion":      0.0,    # YoY % change above 0 = expanding
     "indpro_strong":         4.0,    # YoY % change above 4 = strong expansion
     "indpro_contraction":   -2.0,    # YoY % change below -2 = contraction
+    # Curve DIRECTION (6-month change in the 10Y-2Y spread) as a LEADING signal, so
+    # transitions can fire ahead of lagging INDPRO. Uses the DGS10/DGS2 series already
+    # fetched (no new data source; the free alternative to Conference Board LEI).
+    "curve_flattening":     -0.50,   # spread fell >= 0.50 over 6m -> late-cycle warning
+    "curve_steepening":      0.50,   # spread rose >= 0.50 over 6m -> early-recovery signal
+    "curve_low":             0.50,   # ...only when the spread itself is still at/below this
 }
 
 # Manual override. Set to one of "Early-cycle", "Mid-cycle", "Late-cycle",
@@ -206,6 +212,12 @@ WEIGHTS = Weights().normalize()
 # 0-100 scale signal thresholds.
 SIGNAL_BUY   = 65
 SIGNAL_AVOID = 40
+
+# Watch tier: the cycle strongly favors a sector but relative strength has not
+# confirmed yet. Flags "cycle-favored, waiting for RS turn" instead of a premature
+# Buy, so a sector isn't bought on cycle + seasonality before price agrees.
+WATCH_CYCLE_MIN = 80.0   # cycle_fit_score at/above this ...
+WATCH_RS_MAX    = 45.0   # ... while rs_score is below this -> Watch
 
 # Drill-down trigger: run sub-sector analysis for sectors at or above this
 # composite score. Set equal to SIGNAL_BUY to only drill into Buy sectors,

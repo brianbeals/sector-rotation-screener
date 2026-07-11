@@ -33,6 +33,30 @@ def test_composite_signal_boundaries(score, expected, monkeypatch):
     assert result["signal"] == expected
 
 
+@pytest.mark.parametrize(
+    ("cycle", "rs", "is_watch"),
+    [
+        (config.WATCH_CYCLE_MIN, config.WATCH_RS_MAX - 0.01, True),   # both conditions met (boundaries)
+        (config.WATCH_CYCLE_MIN + 5, 0.0, True),                      # clearly cycle-favored, weak RS
+        (config.WATCH_CYCLE_MIN, config.WATCH_RS_MAX, False),         # RS not below the max -> not Watch
+        (config.WATCH_CYCLE_MIN - 0.01, 0.0, False),                  # cycle below the min -> not Watch
+    ],
+)
+def test_watch_tier(cycle, rs, is_watch):
+    signal = scoring.composite_signal(50.0, cycle, rs)["signal"]
+    assert (signal == "Watch") is is_watch
+
+
+def test_watch_overrides_would_be_buy(monkeypatch):
+    # Weight everything on cycle so a high cycle alone scores a Buy on the composite...
+    monkeypatch.setattr(
+        config, "WEIGHTS", config.Weights(seasonality=0.0, cycle_fit=1.0, rel_strength=0.0)
+    )
+    res = scoring.composite_signal(0.0, 90.0, 30.0)
+    assert res["composite"] >= config.SIGNAL_BUY   # would be a Buy on score alone
+    assert res["signal"] == "Watch"                # ...but cycle-favored + weak RS forces Watch
+
+
 def test_composite_signal_uses_configured_weights():
     result = scoring.composite_signal(80.0, 60.0, 40.0)
     expected = (

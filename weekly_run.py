@@ -60,19 +60,20 @@ Cycle phase: {cycle_phase}
 Cycle reasoning: {cycle_why}
 
 Backtest (since {bt_inception}, {trade_cost_bps} bps trading cost): Strategy {strategy_cum:+.2%} vs SPY {spy_cum:+.2%}. {beats_spy_text}
+Signal quality: {fwd_line}
 
 Sector scores (composite scale 0-100, sorted descending):
 {sector_table}
 
 Composite weights: Seasonality {w_season}% + Cycle Fit {w_cycle}% + Relative Strength {w_rs}%.
-Signal thresholds: Buy ≥ {signal_buy}, Avoid ≤ {signal_avoid}.
+Signal thresholds: Buy ≥ {signal_buy}, Avoid ≤ {signal_avoid}. A sector is flagged Watch when cycle fit ≥ {watch_cycle} but relative strength < {watch_rs} (cycle-favored, waiting for RS to confirm before a Buy).
 
 Macro vintage as of: {vintage_date}
 
 Write a markdown commentary in this exact structure (use the headings verbatim):
 
 ## What the screen said this week
-2-3 short paragraphs. Cover: the current cycle phase classification and the macro signals driving it; which sectors topped the composite (and roughly why, whether seasonality, cycle fit, relative strength, or some combination); any notable Avoid signals.
+2-3 short paragraphs. Cover: the current cycle phase classification and the macro signals driving it; which sectors topped the composite (and roughly why, whether seasonality, cycle fit, relative strength, or some combination); any Watch signals (cycle favors them but relative strength has not confirmed) and notable Avoid signals.
 
 ## Things worth noticing
 2-3 short paragraphs of educational observations. Possible angles: sectors with strong RS but weak cycle fit (or vice versa), thin-sample seasonality warnings, divergence between cycle phase and price action, anything counterintuitive in the rankings. Stay descriptive, not prescriptive. No forward predictions.
@@ -134,6 +135,19 @@ def _generate_commentary(data: dict) -> str:
     else:
         beats_text = "Backtest skipped or unavailable."
 
+    fwd = data.get("forward_validation") or {}
+    if fwd.get("n_calls"):
+        horizons = "-".join(str(h) for h in fwd.get("horizons", []))
+        fwd_line = (
+            f"Buy-signal forward returns ({horizons}-week horizon, {fwd['n_calls']} calls "
+            f"over {fwd.get('weeks_evaluated', 0)} weeks): mean {fwd.get('mean_fwd', 0):+.2%} "
+            f"vs SPY {fwd.get('mean_spy_fwd', 0):+.2%} (excess {fwd.get('mean_excess', 0):+.2%}); "
+            f"the Buy sector beat SPY {fwd.get('hit_rate_vs_spy', 0):.0%} of the time and was "
+            f"positive {fwd.get('hit_rate_positive', 0):.0%} of the time."
+        )
+    else:
+        fwd_line = "Buy-signal forward-return validation unavailable this run."
+
     w = config.WEIGHTS
     prompt = PROMPT_TEMPLATE.format(
         date=data["date"],
@@ -150,6 +164,9 @@ def _generate_commentary(data: dict) -> str:
         w_rs=int(round(w.rel_strength * 100)),
         signal_buy=int(config.SIGNAL_BUY),
         signal_avoid=int(config.SIGNAL_AVOID),
+        watch_cycle=int(config.WATCH_CYCLE_MIN),
+        watch_rs=int(config.WATCH_RS_MAX),
+        fwd_line=fwd_line,
         vintage_date=data["vintage"].get("fred_vintage", "n/a"),
     )
 

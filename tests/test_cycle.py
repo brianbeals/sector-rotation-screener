@@ -26,6 +26,33 @@ def test_cycle_phase_decisions(spread, growth, expected):
     assert phase == expected
 
 
+@pytest.mark.parametrize(
+    ("spread", "growth", "spread_dir", "expected"),
+    [
+        # Flattening fast while still positive and expanding -> Late-cycle, ahead of INDPRO.
+        (0.6, 5.0, -0.8, "Late-cycle"),
+        # Steepening fast from a low positive spread -> Early-cycle recovery.
+        (0.2, 0.5, 0.8, "Early-cycle"),
+        # Steepening out of inversion while activity positive -> Early-cycle (leads INDPRO).
+        (-0.1, 1.0, 0.7, "Early-cycle"),
+        # Inverted, NOT steepening, positive INDPRO -> Late-cycle (unchanged level logic).
+        (-0.2, 1.0, -0.1, "Late-cycle"),
+        # Mild direction changes do not override the level logic.
+        (0.6, 5.0, -0.1, "Early-cycle"),
+        (0.6, 2.0, 0.1, "Mid-cycle"),
+    ],
+)
+def test_cycle_direction_leading_rules(spread, growth, spread_dir, expected):
+    phase, _ = cycle._decide(spread, growth, spread_dir)
+    assert phase == expected
+
+
+def test_cycle_direction_defaults_to_level_only():
+    # spread_dir=None reproduces the level-only classification.
+    assert cycle._decide(0.6, 5.0)[0] == "Early-cycle"
+    assert cycle._decide(0.6, 5.0, None)[0] == "Early-cycle"
+
+
 def test_live_classification_honors_valid_override(monkeypatch):
     dates = pd.date_range("2023-01-31", periods=13, freq="ME")
     macro = {

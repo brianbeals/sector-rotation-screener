@@ -129,7 +129,11 @@ def rel_strength_scores(sector_prices: pd.DataFrame,
 def composite_signal(seasonality: float, cycle: float, rs: float) -> Dict[str, float]:
     w = config.WEIGHTS
     score = w.seasonality * seasonality + w.cycle_fit * cycle + w.rel_strength * rs
-    if score >= config.SIGNAL_BUY:
+    # Watch takes precedence: cycle strongly favors the sector but relative strength
+    # hasn't confirmed, so flag it rather than let seasonality + cycle carry it to a Buy.
+    if cycle >= config.WATCH_CYCLE_MIN and rs < config.WATCH_RS_MAX:
+        signal = "Watch"
+    elif score >= config.SIGNAL_BUY:
         signal = "Buy"
     elif score <= config.SIGNAL_AVOID:
         signal = "Avoid"

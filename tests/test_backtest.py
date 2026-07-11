@@ -131,3 +131,58 @@ def test_run_backtest_limits_positions_and_applies_turnover_cost(monkeypatch):
     assert frame.iloc[1]["n_held"] == 2
     assert frame.iloc[1]["cost_drag"] == pytest.approx(0.0)
     assert np.isfinite(frame.iloc[1]["strategy_ret"])
+
+
+def test_forward_return_uses_close_at_horizon():
+    close = pd.Series(
+        [100.0, 110.0, 121.0],
+        index=pd.to_datetime(["2024-01-05", "2024-02-16", "2024-03-01"]),
+    )
+    # 6 weeks from 2024-01-05 is 2024-02-16; last close <= that is 110 -> +10%.
+    assert backtest._forward_return(close, pd.Timestamp("2024-01-05"), 6) == pytest.approx(0.10)
+
+
+def test_forward_return_validation_requires_spy():
+    with pytest.raises(RuntimeError, match="Need SPY"):
+        backtest.forward_return_validation({}, {}, end_date="2024-06-30")
+
+
+def _patch_signals(monkeypatch, signal, comp=90.0):
+    monkeypatch.setattr(config, "BACKTEST_START", "2024-01-05")
+    monkeypatch.setattr(config, "SECTORS", {"A": "A"})
+    monkeypatch.setattr(config, "SECTOR_INCEPTION", {"A": date(2020, 1, 1)})
+    monkeypatch.setattr(backtest.cycle_mod, "classify_at_date", lambda v, a: {"phase": "Mid-cycle"})
+    monkeypatch.setattr(backtest.scoring, "seasonality_score", lambda *a, **k: {"score": 100.0})
+    monkeypatch.setattr(backtest.scoring, "cycle_fit_score", lambda *a, **k: {"score": 100.0})
+    monkeypatch.setattr(backtest.scoring, "rel_strength_scores", lambda *a, **k: {"score": 100.0})
+    monkeypatch.setattr(backtest.scoring, "composite_signal",
+                        lambda s, c, r: {"composite": comp, "signal": signal})
+
+
+def test_forward_return_validation_scores_buy_signals(monkeypatch):
+    _patch_signals(monkeypatch, "Buy")
+    # A compounds faster than SPY, so a Buy call beats SPY over any forward window.
+    prices = {
+        "SPY": price_frame("2024-01-01", 220, daily_return=0.0005),
+        "A":   price_frame("2024-01-01", 220, daily_return=0.0020),
+    }
+    per_call, summary = backtest.forward_return_validation(
+        prices, {}, horizons_weeks=(6, 7, 8), end_date="2024-06-30")
+    assert summary["n_calls"] > 0
+    assert summary["mean_fwd"] > summary["mean_spy_fwd"]
+    assert summary["mean_excess"] > 0
+    assert summary["hit_rate_vs_spy"] == pytest.approx(1.0)
+    assert summary["hit_rate_positive"] == pytest.approx(1.0)
+    assert set(per_call["ticker"]) == {"A"}
+    assert (per_call["excess"] > 0).all()
+
+
+def test_forward_return_validation_no_buys_is_empty(monkeypatch):
+    _patch_signals(monkeypatch, "Avoid", comp=10.0)
+    prices = {
+        "SPY": price_frame("2024-01-01", 220, daily_return=0.0005),
+        "A":   price_frame("2024-01-01", 220, daily_return=0.0005),
+    }
+    per_call, summary = backtest.forward_return_validation(prices, {}, end_date="2024-06-30")
+    assert summary["n_calls"] == 0
+    assert per_call.empty
