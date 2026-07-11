@@ -259,9 +259,11 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
   header.bar {
     background: var(--navy); color: #fff; padding: 18px 24px; border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
   }
   header.bar h1 { margin: 0 0 4px 0; font-size: 22px; font-weight: 600; }
   header.bar .meta { font-size: 13px; opacity: 0.85; }
+  header.bar .hdr-mark { flex: 0 0 auto; }
   .banner {
     margin-top: 12px; padding: 12px 16px; border-radius: 6px;
     font-weight: 600; font-size: 14px;
@@ -366,11 +368,14 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
 <a href="/" style="display:inline-block; color:#2E86C1; text-decoration:none; margin: 12px 0 4px; font-size: 14px;">← Sector Rotation Screen home</a>
 
 <header class="bar">
-  <h1>Sector Rotation Screen</h1>
-  <div class="meta">
-    {{ run_date }} · 11 SPDR sector ETFs vs SPY · Composite weights:
-    Seasonality {{ w_season }} / Cycle {{ w_cycle }} / RS {{ w_rs }}
+  <div>
+    <h1>Sector Rotation Screen</h1>
+    <div class="meta">
+      {{ run_date }} · 11 SPDR sector ETFs vs SPY · Composite weights:
+      Seasonality {{ w_season }} / Cycle {{ w_cycle }} / RS {{ w_rs }}
+    </div>
   </div>
+  <svg class="hdr-mark" viewBox="0 0 32 32" width="40" height="40" aria-label="Brian Beals"><rect width="32" height="32" rx="6" fill="#fff"/><text x="16" y="15" text-anchor="middle" dominant-baseline="central" fill="#1E3A5F" font-family="-apple-system,system-ui,sans-serif" font-size="16" font-weight="800" letter-spacing="-0.04em">BB</text></svg>
 </header>
 
 {% if backtest_warning %}
@@ -506,15 +511,6 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
   {% endfor %}
 </div>
 
-<footer>
-  <div class="sitelinks"><a href="https://brianbeals.com">brianbeals.com</a> &middot;
-    <a href="https://brianbeals.com/writing">Writing</a> &middot;
-    <a href="https://weather.brianbeals.com">Marine Forecast</a> &middot;
-    <a href="https://github.com/brianbeals/sector-rotation-screener">GitHub</a></div>
-  <div class="byline"><svg viewBox="0 0 32 32" width="16" height="16" aria-label="Brian Beals"><rect width="32" height="32" rx="6" fill="#1E3A5F"/><text x="16" y="15" text-anchor="middle" dominant-baseline="central" fill="#fff" font-family="-apple-system,system-ui,sans-serif" font-size="16" font-weight="800" letter-spacing="-0.04em">BB</text></svg>&copy; Brian Beals &middot; brianbeals.com &middot; {{ run_date_long }}</div>
-  <div style="margin-top:8px;">Price data through {{ prices_through }} &middot; FRED vintage {{ fred_vintage }}</div>
-</footer>
-
 </div>
 
 <script>
@@ -612,6 +608,15 @@ document.querySelectorAll("#scores th").forEach((th, i) => {
 </section>
 {% endfor %}
 {% endif %}
+
+<footer>
+  <div class="sitelinks"><a href="https://brianbeals.com">brianbeals.com</a> &middot;
+    <a href="https://brianbeals.com/writing">Writing</a> &middot;
+    <a href="https://weather.brianbeals.com">Marine Forecast</a> &middot;
+    <a href="https://github.com/brianbeals/sector-rotation-screener">GitHub</a></div>
+  <div class="byline"><svg viewBox="0 0 32 32" width="16" height="16" aria-label="Brian Beals"><rect width="32" height="32" rx="6" fill="#1E3A5F"/><text x="16" y="15" text-anchor="middle" dominant-baseline="central" fill="#fff" font-family="-apple-system,system-ui,sans-serif" font-size="16" font-weight="800" letter-spacing="-0.04em">BB</text></svg>&copy; Brian Beals &middot; brianbeals.com &middot; {{ run_date_long }}</div>
+  <div style="margin-top:8px;">Price data through {{ prices_through }} &middot; FRED vintage {{ fred_vintage }}</div>
+</footer>
 
 </body>
 </html>
