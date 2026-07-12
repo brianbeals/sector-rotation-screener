@@ -346,7 +346,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
   .stat .val { color: var(--headtx); font-size: 17px; font-weight: 700;
                margin-top: 4px; }
   .stat .sub { color: var(--ink3); font-size: 12px; margin-top: 2px; }
-  footer { text-align: center; color: var(--lbl); font-size: 12px; margin: 28px 0 12px;
+  footer { text-align: left; color: var(--lbl); font-size: 12px; margin: 28px 0 12px;
            line-height: 1.6; }
   footer .sitelinks { margin-bottom: 8px; font-size: 12px; }
   footer .sitelinks a { color: var(--accent); font-weight: 600; text-decoration: none; }
