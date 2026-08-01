@@ -238,6 +238,7 @@ PAGE_SHELL = """<!DOCTYPE html>
   <meta name="color-scheme" content="light dark">
   <meta name="theme-color" content="#1E3A5F" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#0F1822" media="(prefers-color-scheme: dark)">
+  <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{{"token": "8b547f8c06884898a5b99f89681a355e"}}'></script>
   <style>
     :root {{
       color-scheme: light dark;
