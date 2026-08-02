@@ -232,6 +232,19 @@ PAGE_SHELL = """<!DOCTYPE html>
   <title>{title} | Brian Beals</title>
   <meta name="description" content="{description}">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231E3A5F'/%3E%3Ctext x='16' y='15' text-anchor='middle' dominant-baseline='central' fill='white' font-family='system-ui' font-size='16' font-weight='800'%3EBB%3C/text%3E%3C/svg%3E">
+  <!-- Social card. This shell renders index.html, which IS sector.brianbeals.com,
+       so the og: tags have to live here. report.py has its own near-identical head
+       for the dated pages under weekly/; changing one does not change the other,
+       which is the trap that cost a wasted workflow run. -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{title}">
+  <meta property="og:description" content="{description}">
+  <meta property="og:url" content="{page_url}">
+  <meta property="og:image" content="https://sector.brianbeals.com/og-card.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="{page_url}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600&display=swap" rel="stylesheet">
@@ -417,12 +430,17 @@ _DISCLAIMER_HTML = (
 )
 
 
-def _wrap_in_page(title: str, description: str, content: str, year: int) -> str:
+def _wrap_in_page(title: str, description: str, content: str, year: int,
+                  page_url: str = "https://sector.brianbeals.com/") -> str:
+    # page_url feeds both og:url and rel=canonical. It defaults to the root because
+    # the landing page is the one that gets shared; the history index passes its own
+    # so the two pages don't claim to be the same URL.
     return PAGE_SHELL.format(
         title=title,
         description=description,
         content=content,
         year=year,
+        page_url=page_url,
     )
 
 
@@ -510,6 +528,7 @@ def _build_history_index_html(history_root: Path) -> str:
         description="Date-stamped archive of every weekly sector rotation screen run, with dashboards and AI commentary.",
         content=body,
         year=year,
+        page_url="https://sector.brianbeals.com/weekly/history/",
     )
 
 
@@ -546,6 +565,7 @@ def _build_summary_html(today: str, commentary_md: str) -> str:
         description=f"Anthropic's Claude commentary on the {pretty} sector rotation screen output. Not financial advice.",
         content=content,
         year=year,
+        page_url=f"https://sector.brianbeals.com/weekly/history/{today}/",
     )
 
 
