@@ -240,7 +240,23 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
 <head>
 <meta charset="utf-8">
 <title>Sector Rotation Screen — {{ run_date }}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231E3A5F'/%3E%3Ctext x='16' y='15' text-anchor='middle' dominant-baseline='central' fill='white' font-family='system-ui' font-size='16' font-weight='800'%3EBB%3C/text%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Sector Rotation Screen">
+<meta property="og:description" content="11 SPDR sector ETFs scored weekly on seasonality, economic-cycle fit, and relative strength, backtested 15 years against SPY. Open methodology, rebuilt every Sunday.">
+<meta property="og:url" content="https://sector.brianbeals.com/">
+<meta property="og:image" content="https://sector.brianbeals.com/og-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://sector.brianbeals.com/">
+<!-- og:title deliberately omits the run date. The title element above carries it
+     because a reader on the page wants to know how fresh it is, but a link preview
+     is cached by iMessage, Slack and LinkedIn and re-shown for weeks. A date baked
+     into the preview would read as stale long after the page itself had updated.
+     Same reasoning applies to og-card.png: it is a committed brand asset, not a
+     weekly artifact, which is why weekly.yml only stages weekly/ and index.html. -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "8b547f8c06884898a5b99f89681a355e"}'></script>
 <style>
   :root {
