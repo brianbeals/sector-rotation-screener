@@ -59,6 +59,7 @@ The Excel workbook has three sheets: **Sector Screen**, **Cycle Context**, and *
 | `screener.py` | Main entry. Orchestrates the whole run.                                |
 | `drilldown.py`| Per-sector drill-down for top-holdings analysis                        |
 | `weekly_run.py` | Wraps `screener.py`, calls Anthropic's Claude for commentary, publishes to `weekly/` |
+| `refresh_index.py` | Rebuilds the `sector.brianbeals.com` landing page from `weekly/history/`, no run required |
 | `.github/workflows/weekly.yml` | GitHub Actions: Sunday 21:00 UTC, commits results back |
 
 ## Configurable knobs (config.py)
