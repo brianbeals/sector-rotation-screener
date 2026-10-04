@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sector Rotation Screen — October 04, 2026</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231E3A5F'/%3E%3Ctext x='16' y='15' text-anchor='middle' dominant-baseline='central' fill='white' font-family='system-ui' font-size='16' font-weight='800'%3EBB%3C/text%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Sector Rotation Screen">
+<meta property="og:description" content="11 SPDR sector ETFs scored weekly on seasonality, economic-cycle fit, and relative strength, backtested 15 years against SPY. Open methodology, rebuilt every Sunday.">
+<meta property="og:url" content="https://sector.brianbeals.com/">
+<meta property="og:image" content="https://sector.brianbeals.com/og-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://sector.brianbeals.com/">
+<!-- og:title deliberately omits the run date. The title element above carries it
+     because a reader on the page wants to know how fresh it is, but a link preview
+     is cached by iMessage, Slack and LinkedIn and re-shown for weeks. A date baked
+     into the preview would read as stale long after the page itself had updated.
+     Same reasoning applies to og-card.png: it is a committed brand asset, not a
+     weekly artifact, which is why weekly.yml only stages weekly/ and index.html. -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "8b547f8c06884898a5b99f89681a355e"}'></script>
+<style>
+  :root {
+    color-scheme: light dark;
+    --navy:#1E3A5F; --accent:#2E86C1; --card:#D6EAF8;
+    --bg:#F4F6F9; --body:#1A1A2A;
+    --win:#1E8449; --risk:#C0392B; --caution:#D4AC0D; --watch:#2471A3;
+    --paper:#ffffff; --headtx:#1E3A5F; --ink2:#333; --ink3:#555; --lbl:#777;
+    --hair:#eef2f6; --tint:#f7faff; --zebra:#fbfcfd;
+    --axis:rgba(0,0,0,0.2); --spyline:#1E3A5F;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 0; background: var(--bg); color: var(--body);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 15px; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 24px; }
+  header.bar {
+    background: var(--navy); color: #fff; padding: 18px 24px; border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  }
+  header.bar h1 { margin: 0 0 4px 0; font-size: 22px; font-weight: 600; }
+  header.bar .meta { font-size: 13px; opacity: 0.85; }
+  header.bar .hdr-mark { flex: 0 0 auto; }
+  .banner {
+    margin-top: 12px; padding: 12px 16px; border-radius: 6px;
+    font-weight: 600; font-size: 14px;
+  }
+  .banner.warn { background: var(--risk); color: #fff; }
+  .banner.tax  { background: var(--caution); color: #1A1A2A; }
+  .banner.note { background: var(--paper); color: var(--body);
+                 border-left: 4px solid var(--accent); }
+  .phase-card {
+    background: var(--paper); border-radius: 8px; padding: 18px 22px; margin-top: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    display: grid; grid-template-columns: auto 1fr; gap: 18px; align-items: center;
+  }
+  .phase-badge {
+    display: inline-block; padding: 8px 16px; border-radius: 999px;
+    background: var(--accent); color: #fff; font-weight: 600; font-size: 16px;
+    min-width: 130px; text-align: center;
+  }
+  .phase-badge.override { background: var(--caution); color: #1A1A2A; }
+  .phase-why { color: var(--ink2); line-height: 1.5; }
+  .phase-inputs { margin-top: 14px; font-size: 13px; color: var(--ink2);
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .phase-inputs .label { color: var(--lbl); font-size: 11px; text-transform: uppercase;
+    letter-spacing: 0.5px; }
+  .phase-inputs .val { color: var(--headtx); font-size: 17px; font-weight: 600; }
+  .phase-inputs .delta { color: var(--ink3); font-size: 12px; }
+  h2.section {
+    background: var(--navy); color: #fff; padding: 10px 16px; margin: 22px 0 12px 0;
+    border-radius: 6px; font-size: 16px; font-weight: 600;
+  }
+  table { width: 100%; border-collapse: collapse; background: var(--paper);
+          border-radius: 8px; overflow: hidden;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+  th { background: var(--accent); color: #fff; padding: 10px 8px; text-align: left;
+       cursor: pointer; user-select: none; font-size: 13px; font-weight: 600; }
+  th.num, td.num { text-align: right; }
+  th:hover { background: #2575a8; }
+  td { padding: 9px 8px; border-bottom: 1px solid var(--hair); font-size: 14px; }
+  tr:nth-child(even) td { background: var(--zebra); }
+  tr:hover td { background: var(--card); }
+  .signal { display: inline-block; padding: 3px 10px; border-radius: 4px;
+            font-weight: 600; font-size: 12px; color: #fff; }
+  .sig-Buy { background: var(--win); }
+  .sig-Hold { background: var(--caution); color: #1A1A2A; }
+  .sig-Avoid { background: var(--risk); }
+  .sig-Watch { background: var(--watch); }
+  .pill { display: inline-block; padding: 3px 10px; border-radius: 4px;
+          font-weight: 600; font-size: 12px; color: #fff; }
+  .pill-buy { background: var(--win); }
+  .pill-hold { background: var(--caution); color: #1A1A2A; }
+  .pill-avoid { background: var(--risk); }
+  .thin-flag { color: var(--caution); font-weight: 600; cursor: help; }
+  .heatmap { width: 100%; border-collapse: collapse; background: var(--paper);
+             box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-radius: 8px; overflow: hidden; }
+  .heatmap th, .heatmap td { padding: 8px 6px; text-align: center;
+                              font-size: 12px; border-bottom: 1px solid var(--hair); }
+  .heatmap th { background: var(--accent); color: #fff; }
+  .heatmap td.row-label { text-align: left; font-weight: 600; color: var(--headtx);
+                          background: var(--tint); }
+  .legend { font-size: 12px; color: var(--ink3); margin-top: 6px; }
+  .rs-bars { background: var(--paper); border-radius: 8px; padding: 16px;
+             box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+  .rs-row { display: grid; grid-template-columns: 80px 1fr 80px;
+            align-items: center; gap: 10px; padding: 4px 0; font-size: 13px; }
+  .rs-bar { background: var(--hair); border-radius: 3px; height: 18px; position: relative; }
+  .rs-bar .fill { position: absolute; top: 0; bottom: 0; }
+  .rs-bar .fill.pos { background: var(--win); left: 50%; }
+  .rs-bar .fill.neg { background: var(--risk); right: 50%; }
+  .rs-bar .axis { position: absolute; left: 50%; top: 0; bottom: 0; width: 1px;
+                  background: var(--axis); }
+  .equity-card {
+    background: var(--paper); border-radius: 8px; padding: 16px 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr);
+                gap: 10px; margin-bottom: 12px; }
+  .stat { background: var(--tint); border-radius: 6px; padding: 10px 12px; }
+  .stat .lbl { color: var(--lbl); font-size: 11px; text-transform: uppercase;
+               letter-spacing: 0.5px; }
+  .stat .val { color: var(--headtx); font-size: 17px; font-weight: 700;
+               margin-top: 4px; }
+  .stat .sub { color: var(--ink3); font-size: 12px; margin-top: 2px; }
+  footer { text-align: center; color: var(--lbl); font-size: 12px; margin: 28px 0 12px;
+           line-height: 1.6; }
+  footer .sitelinks { margin-bottom: 8px; font-size: 12px; }
+  footer .sitelinks a { color: var(--accent); font-weight: 600; text-decoration: none; }
+  footer .sitelinks a:hover { text-decoration: underline; }
+  footer .byline { display: inline-flex; align-items: center; gap: 6px; }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:#0F1822; --body:#E6EDF3; --card:#1C3350;
+      --paper:#16202B; --headtx:#A9C9E8; --ink2:#C4D2DE; --ink3:#9FB4C4;
+      --lbl:#8CA3B5; --hair:#2A3B4D; --tint:#132433; --zebra:#182533;
+      --axis:rgba(255,255,255,0.25); --spyline:#8FB3D9;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a href="/" style="display:inline-block; color:#2E86C1; text-decoration:none; margin: 12px 0 4px; font-size: 14px;">← Sector Rotation Screen home</a>
+
+<header class="bar">
+  <div>
+    <h1>Sector Rotation Screen</h1>
+    <div class="meta">
+      October 04, 2026 · 11 SPDR sector ETFs vs SPY · Composite weights:
+      Seasonality 25% / Cycle 40% / RS 35%
+    </div>
+  </div>
+  <svg class="hdr-mark" viewBox="0 0 32 32" width="40" height="40" aria-label="Brian Beals"><rect width="32" height="32" rx="6" fill="#fff"/><text x="16" y="15" text-anchor="middle" dominant-baseline="central" fill="#1E3A5F" font-family="-apple-system,system-ui,sans-serif" font-size="16" font-weight="800" letter-spacing="-0.04em">BB</text></svg>
+</header>
+
+
+
+
+
+<div class="phase-card">
+  <div class="phase-badge ">Mid-cycle</div>
+  <div>
+    <div class="phase-why">INDPRO YoY +1.4% between 0.0% and 4.0% with curve +0.46: steady expansion.</div>
+    <div class="phase-inputs">
+      <div>
+        <div class="label">10Y - 2Y spread</div>
+        <div class="val">+0.46</div>
+        <div class="delta">6m change: -0.06</div>
+      </div>
+      <div>
+        <div class="label">10Y yield</div>
+        <div class="val">5.24%</div>
+        <div class="delta">2Y: 4.78%</div>
+      </div>
+      <div>
+        <div class="label">INDPRO YoY</div>
+        <div class="val">+1.4%</div>
+        <div class="delta">3m trend: +0.4</div>
+      </div>
+      <div>
+        <div class="label">INDPRO as of</div>
+        <div class="val" style="font-size: 14px;">2026-08-01</div>
+        <div class="delta">10Y as of: 2026-10-01</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2 class="section">Sector Scores &amp; Signals</h2>
+<table id="scores">
+  <thead>
+    <tr>
+      <th data-sort="text">ETF</th>
+      <th data-sort="text">Name</th>
+      <th class="num" data-sort="num">Last</th>
+      <th class="num" data-sort="num">% From 52W High</th>
+      <th class="num" data-sort="num">Seasonality</th>
+      <th class="num" data-sort="num">n yrs</th>
+      <th class="num" data-sort="num">Cycle Fit</th>
+      <th class="num" data-sort="num">Rel Strength</th>
+      <th class="num" data-sort="num">RS 3m</th>
+      <th class="num" data-sort="num">Composite</th>
+      <th data-sort="text">Signal</th>
+    </tr>
+  </thead>
+  <tbody>
+  
+    <tr>
+      <td>XLK</td>
+      <td>Technology</td>
+      <td class="num">$199.81</td>
+      <td class="num">0.00%</td>
+      <td class="num">73.0</td>
+      <td class="num">21</td>
+      <td class="num">100.0</td>
+      <td class="num">91.1</td>
+      <td class="num">6.28%</td>
+      <td class="num"><b>90.1</b></td>
+      <td><span class="signal sig-Buy">Buy</span></td>
+    </tr>
+  
+    <tr>
+      <td>XLC</td>
+      <td>Communications</td>
+      <td class="num">$110.32</td>
+      <td class="num">-7.29%</td>
+      <td class="num">40.9 <span class="thin-flag" title="Thin sample: fewer than 10 years of history">⚠</span></td>
+      <td class="num">9</td>
+      <td class="num">100.0</td>
+      <td class="num">23.4</td>
+      <td class="num">-2.27%</td>
+      <td class="num"><b>58.4</b></td>
+      <td><span class="signal sig-Watch">Watch</span></td>
+    </tr>
+  
+    <tr>
+      <td>XLI</td>
+      <td>Industrials</td>
+      <td class="num">$169.95</td>
+      <td class="num">-8.63%</td>
+      <td class="num">62.2</td>
+      <td class="num">21</td>
+      <td class="num">50.0</td>
+      <td class="num">43.5</td>
+      <td class="num">-10.86%</td>
+      <td class="num"><b>50.8</b></td>
+      <td><span class="signal sig-Hold">Hold</span></td>
+    </tr>
+  
+    <tr>
+      <td>XLE</td>
+      <td>Energy</td>
+      <td class="num">$62.82</td>
+      <td class="num">-4.15%</td>
+      <td class="num">66.1</td>
+      <td class="num">21</td>
+      <td class="num">50.0</td>
+      <td class="num">30.3</td>
+      <td class="num">16.24%</td>
+      <td class="num"><b>47.1</b></td>
+      <td><span class="signal sig-Hold">Hold</span></td>
+    </tr>
+  
+    <tr>
+      <td>XLY</td>
+      <td>Consumer Discretionary</td>
+      <td class="num">$110.04</td>
+      <td class="num">-11.08%</td>
+      <td class="num">58.4</td>
+      <td class="num">21</td>
+      <td class="num">50.0</td>
+      <td class="num">18.3</td>
+      <td class="num">-9.25%</td>
+      <td class="num"><b>41.0</b></td>
+      <td><span class="signal sig-Hold">Hold</span></td>
+    </tr>
+  
+    <tr>
+      <td>XLF</td>
+      <td>Financials</td>
+      <td class="num">$53.49</td>
+      <td class="num">-8.33%</td>
+      <td class="num">66.6</td>
+      <td class="num">21</td>
+      <td class="num">50.0</td>
+      <td class="num">11.7</td>
+      <td class="num">-7.08%</td>
+      <td class="num"><b>40.7</b></td>
+      <td><span class="signal sig-Hold">Hold</span></td>
+    </tr>
+  
+    <tr>
+      <td>XLU</td>
+      <td>Utilities</td>
+      <td class="num">$39.83</td>
+      <td class="num">-14.81%</td>
+      <td class="num">77.8</td>
+      <td class="num">21</td>
+      <td class="num">35.0</td>
+      <td class="num">10.4</td>
+      <td class="num">-14.13%</td>
+      <td class="num"><b>37.1</b></td>
+      <td><span class="signal sig-Avoid">Avoid</span></td>
+    </tr>
+  
+    <tr>
+      <td>XLB</td>
+      <td>Materials</td>
+      <td class="num">$48.86</td>
+      <td class="num">-8.54%</td>
+      <td class="num">57.1</td>
+      <td class="num">21</td>
+      <td class="num">50.0</td>
+      <td class="num">7.2</td>
+      <td class="num">-8.27%</td>
+      <td class="num"><b>36.8</b></td>
+      <td><span class="signal sig-Avoid">Avoid</span></td>
+    </tr>
+  
+    <tr>
+      <td>XLV</td>
+      <td>Healthcare</td>
+      <td class="num">$166.18</td>
+      <td class="num">-5.05%</td>
+      <td class="num">55.8</td>
+      <td class="num">21</td>
+      <td class="num">35.0</td>
+      <td class="num">23.8</td>
+      <td class="num">0.30%</td>
+      <td class="num"><b>36.3</b></td>
+      <td><span class="signal sig-Avoid">Avoid</span></td>
+    </tr>
+  
+    <tr>
+      <td>XLP</td>
+      <td>Consumer Staples</td>
+      <td class="num">$80.53</td>
+      <td class="num">-8.81%</td>
+      <td class="num">58.2</td>
+      <td class="num">21</td>
+      <td class="num">35.0</td>
+      <td class="num">11.5</td>
+      <td class="num">-6.31%</td>
+      <td class="num"><b>32.6</b></td>
+      <td><span class="signal sig-Avoid">Avoid</span></td>
+    </tr>
+  
+    <tr>
+      <td>XLRE</td>
+      <td>Real Estate</td>
+      <td class="num">$40.81</td>
+      <td class="num">-10.56%</td>
+      <td class="num">32.7</td>
+      <td class="num">11</td>
+      <td class="num">50.0</td>
+      <td class="num">12.6</td>
+      <td class="num">-9.78%</td>
+      <td class="num"><b>32.6</b></td>
+      <td><span class="signal sig-Avoid">Avoid</span></td>
+    </tr>
+  
+  </tbody>
+</table>
+<div class="legend">Click any column header to sort. ⚠ flags sectors with under 10 years of history. Composite weights and signal thresholds tunable in <code>config.py</code>.</div>
+
+
+<h2 class="section">Backtest since May 2011</h2>
+<div class="equity-card">
+  <div class="stats-grid">
+    <div class="stat"><div class="lbl">Strategy cum return</div><div class="val">+743.00%</div><div class="sub">SPY: +650.81%</div></div>
+    <div class="stat"><div class="lbl">Strategy CAGR</div><div class="val">+14.91%</div><div class="sub">SPY: +14.05%</div></div>
+    <div class="stat"><div class="lbl">Strategy Sharpe</div><div class="val">0.93</div><div class="sub">SPY: 0.99</div></div>
+    <div class="stat"><div class="lbl">Max drawdown</div><div class="val">-18.78%</div><div class="sub">SPY: -22.93%</div></div>
+  </div>
+  <svg width="100%" viewBox="0 0 1080 280" xmlns="http://www.w3.org/2000/svg" style="display:block;">
+<rect x="0" y="0" width="1080" height="280" fill="var(--paper)"/>
+<line x1="50" y1="250.0" x2="1060" y2="250.0" stroke="var(--hair)" stroke-width="1"/>
+<text x="44" y="254.0" font-size="11" fill="var(--lbl)" text-anchor="end">0.83</text>
+<line x1="50" y1="192.5" x2="1060" y2="192.5" stroke="var(--hair)" stroke-width="1"/>
+<text x="44" y="196.5" font-size="11" fill="var(--lbl)" text-anchor="end">2.84</text>
+<line x1="50" y1="135.0" x2="1060" y2="135.0" stroke="var(--hair)" stroke-width="1"/>
+<text x="44" y="139.0" font-size="11" fill="var(--lbl)" text-anchor="end">4.84</text>
+<line x1="50" y1="77.5" x2="1060" y2="77.5" stroke="var(--hair)" stroke-width="1"/>
+<text x="44" y="81.5" font-size="11" fill="var(--lbl)" text-anchor="end">6.85</text>
+<line x1="50" y1="20.0" x2="1060" y2="20.0" stroke="var(--hair)" stroke-width="1"/>
+<text x="44" y="24.0" font-size="11" fill="var(--lbl)" text-anchor="end">8.85</text>
+<text x="154.8" y="272" font-size="11" fill="var(--lbl)" text-anchor="middle">2013</text>
+<text x="286.4" y="272" font-size="11" fill="var(--lbl)" text-anchor="middle">2015</text>
+<text x="418.2" y="272" font-size="11" fill="var(--lbl)" text-anchor="middle">2017</text>
+<text x="549.9" y="272" font-size="11" fill="var(--lbl)" text-anchor="middle">2019</text>
+<text x="681.7" y="272" font-size="11" fill="var(--lbl)" text-anchor="middle">2021</text>
+<text x="813.3" y="272" font-size="11" fill="var(--lbl)" text-anchor="middle">2023</text>
+<text x="945.1" y="272" font-size="11" fill="var(--lbl)" text-anchor="middle">2025</text>
+<path d="M 50.0,245.2 L 55.4,245.7 L 61.0,246.0 L 66.6,247.7 L 72.0,248.7 L 77.6,246.0 L 83.0,247.9 L 88.6,246.5 L 94.2,245.2 L 99.4,243.9 L 105.0,243.0 L 110.4,243.1 L 116.0,245.0 L 121.4,243.9 L 127.0,243.3 L 132.6,242.9 L 138.0,242.0 L 143.6,242.6 L 149.0,242.4 L 154.6,242.7 L 160.2,240.4 L 165.2,240.0 L 170.8,238.8 L 176.2,238.2 L 181.8,236.7 L 187.2,237.8 L 192.8,235.9 L 198.4,237.0 L 203.8,235.7 L 209.4,234.0 L 214.8,232.9 L 220.4,232.1 L 226.0,233.1 L 231.0,231.6 L 236.6,231.5 L 242.0,231.0 L 247.6,229.8 L 253.0,228.9 L 258.6,228.6 L 264.2,227.8 L 269.6,228.3 L 275.2,227.9 L 280.6,226.1 L 286.2,225.7 L 291.8,227.6 L 296.9,225.0 L 302.5,225.4 L 307.9,224.8 L 313.5,224.7 L 318.9,225.8 L 324.5,224.5 L 330.0,227.2 L 335.5,229.6 L 341.0,224.9 L 346.5,224.6 L 352.0,225.1 L 357.6,228.0 L 362.9,227.7 L 368.5,224.8 L 373.9,224.8 L 379.5,223.8 L 384.9,224.4 L 390.5,221.9 L 396.0,221.7 L 401.5,222.3 L 407.0,222.8 L 412.5,220.8 L 418.0,219.8 L 423.6,218.8 L 428.7,216.5 L 434.3,216.5 L 439.7,216.0 L 445.3,215.2 L 450.7,215.0 L 456.3,213.6 L 461.9,213.8 L 467.3,212.2 L 472.9,210.9 L 478.3,209.4 L 483.9,208.1 L 489.5,204.4 L 494.5,206.2 L 500.1,208.7 L 505.5,207.9 L 511.1,206.4 L 516.5,206.4 L 522.1,204.2 L 527.7,201.7 L 533.1,201.2 L 538.7,207.0 L 544.1,205.4 L 549.7,211.6 L 555.3,206.6 L 560.3,203.7 L 565.9,202.6 L 571.3,199.7 L 576.9,203.4 L 582.3,199.6 L 587.9,197.6 L 593.5,199.7 L 598.9,198.6 L 604.5,196.4 L 609.9,193.8 L 615.5,191.6 L 621.1,190.0 L 626.3,198.0 L 631.9,206.5 L 637.3,198.3 L 642.9,195.5 L 648.3,195.1 L 653.9,190.1 L 659.5,183.2 L 664.9,187.5 L 670.5,189.0 L 675.9,179.4 L 681.5,176.8 L 687.1,177.3 L 692.1,174.6 L 697.7,170.5 L 703.1,163.9 L 708.7,163.9 L 714.1,161.5 L 719.7,158.7 L 725.3,155.1 L 730.7,159.4 L 736.3,152.9 L 741.7,151.5 L 747.3,148.0 L 752.9,157.0 L 758.0,158.1 L 763.5,152.2 L 769.0,164.6 L 774.5,163.7 L 780.0,172.6 L 785.5,164.1 L 791.1,167.8 L 796.5,176.8 L 802.1,169.8 L 807.5,168.2 L 813.1,171.1 L 818.7,166.2 L 823.8,167.0 L 829.4,165.0 L 834.8,161.7 L 840.4,160.5 L 845.8,155.3 L 851.4,150.2 L 857.0,151.8 L 862.4,157.7 L 868.0,161.0 L 873.4,150.4 L 879.0,144.2 L 884.5,140.0 L 889.8,135.8 L 895.4,130.7 L 900.8,134.3 L 906.4,130.9 L 911.8,124.5 L 917.4,125.1 L 923.0,119.1 L 928.4,116.5 L 934.0,114.1 L 939.4,107.9 L 945.0,111.3 L 950.5,106.7 L 955.6,112.2 L 961.2,119.9 L 966.6,120.2 L 972.2,110.5 L 977.6,102.9 L 983.2,97.5 L 988.8,94.6 L 994.2,88.9 L 999.8,84.4 L 1005.2,83.4 L 1010.8,81.8 L 1016.4,80.4 L 1021.4,82.1 L 1027.0,96.7 L 1032.4,74.4 L 1038.0,61.8 L 1043.4,65.6 L 1049.0,65.4 L 1054.6,57.6 L 1060.0,58.5" fill="none" stroke="var(--spyline)" stroke-width="2" opacity="0.7"/>
+<path d="M 50.0,245.2 L 55.4,245.7 L 61.0,246.0 L 66.6,247.4 L 72.0,247.6 L 77.6,246.0 L 83.0,248.4 L 88.6,246.8 L 94.2,246.0 L 99.4,245.6 L 105.0,244.5 L 110.4,244.5 L 116.0,246.4 L 121.4,245.4 L 127.0,245.2 L 132.6,244.7 L 138.0,243.6 L 143.6,244.0 L 149.0,243.8 L 154.6,244.5 L 160.2,242.3 L 165.2,242.0 L 170.8,241.2 L 176.2,240.3 L 181.8,238.9 L 187.2,239.9 L 192.8,238.2 L 198.4,239.2 L 203.8,238.1 L 209.4,236.5 L 214.8,235.5 L 220.4,234.4 L 226.0,235.3 L 231.0,233.5 L 236.6,233.6 L 242.0,233.6 L 247.6,231.9 L 253.0,231.2 L 258.6,231.1 L 264.2,230.1 L 269.6,230.6 L 275.2,229.9 L 280.6,227.6 L 286.2,226.6 L 291.8,227.8 L 296.9,225.0 L 302.5,226.5 L 307.9,226.7 L 313.5,226.5 L 318.9,227.6 L 324.5,226.4 L 330.0,228.7 L 335.5,230.6 L 341.0,225.1 L 346.5,224.8 L 352.0,225.4 L 357.6,227.8 L 362.9,227.8 L 368.5,224.4 L 373.9,227.0 L 379.5,226.0 L 384.9,227.1 L 390.5,224.7 L 396.0,224.1 L 401.5,224.6 L 407.0,224.7 L 412.5,224.1 L 418.0,222.7 L 423.6,220.6 L 428.7,219.4 L 434.3,218.3 L 439.7,217.2 L 445.3,214.8 L 450.7,216.5 L 456.3,215.2 L 461.9,214.2 L 467.3,213.3 L 472.9,209.6 L 478.3,209.0 L 483.9,207.7 L 489.5,203.5 L 494.5,202.8 L 500.1,205.9 L 505.5,205.5 L 511.1,205.2 L 516.5,205.3 L 522.1,204.3 L 527.7,199.5 L 533.1,198.9 L 538.7,207.4 L 544.1,206.0 L 549.7,213.0 L 555.3,208.1 L 560.3,205.2 L 565.9,202.1 L 571.3,197.7 L 576.9,203.0 L 582.3,199.1 L 587.9,195.3 L 593.5,197.8 L 598.9,198.5 L 604.5,194.7 L 609.9,191.0 L 615.5,188.5 L 621.1,182.3 L 626.3,190.2 L 631.9,198.3 L 637.3,189.1 L 642.9,186.7 L 648.3,189.7 L 653.9,184.3 L 659.5,183.1 L 664.9,187.5 L 670.5,186.9 L 675.9,180.1 L 681.5,179.0 L 687.1,178.4 L 692.1,182.4 L 697.7,178.5 L 703.1,175.4 L 708.7,176.7 L 714.1,177.6 L 719.7,175.2 L 725.3,171.9 L 730.7,172.4 L 736.3,164.3 L 741.7,164.5 L 747.3,165.6 L 752.9,169.1 L 758.0,163.9 L 763.5,154.4 L 769.0,159.9 L 774.5,151.0 L 780.0,165.1 L 785.5,160.2 L 791.1,159.4 L 796.5,167.7 L 802.1,151.2 L 807.5,146.3 L 813.1,148.6 L 818.7,146.3 L 823.8,148.4 L 829.4,149.6 L 834.8,148.0 L 840.4,154.9 L 845.8,149.3 L 851.4,143.9 L 857.0,145.6 L 862.4,150.9 L 868.0,156.8 L 873.4,145.8 L 879.0,139.5 L 884.5,136.1 L 889.8,132.2 L 895.4,126.0 L 900.8,122.7 L 906.4,117.5 L 911.8,123.6 L 917.4,120.9 L 923.0,117.6 L 928.4,115.0 L 934.0,112.7 L 939.4,106.5 L 945.0,113.0 L 950.5,107.9 L 955.6,115.5 L 961.2,124.7 L 966.6,132.8 L 972.2,121.0 L 977.6,109.3 L 983.2,105.7 L 988.8,107.2 L 994.2,95.7 L 999.8,92.5 L 1005.2,101.1 L 1010.8,96.2 L 1016.4,95.8 L 1021.4,86.2 L 1027.0,100.5 L 1032.4,83.1 L 1038.0,44.8 L 1043.4,51.3 L 1049.0,56.4 L 1054.6,43.3 L 1060.0,32.1" fill="none" stroke="#2E86C1" stroke-width="2.5"/>
+<rect x="60" y="24" width="14" height="3" fill="#2E86C1"/>
+<text x="80" y="32" font-size="12" fill="var(--body)">Strategy</text>
+<rect x="150" y="24" width="14" height="3" fill="var(--spyline)" opacity="0.7"/>
+<text x="170" y="32" font-size="12" fill="var(--body)">SPY</text>
+</svg>
+  <div class="legend">Equity curves start at 1.00. Trading cost 1 bps applied to turnover at each rebalance. Cash held when no sectors clear MIN_SCORE_TO_HOLD=50.</div>
+</div>
+
+
+<h2 class="section">Seasonality Heatmap (avg monthly return by sector)</h2>
+<table class="heatmap">
+  <thead>
+    <tr>
+      <th>Sector</th>
+      <th>Jan</th><th>Feb</th><th>Mar</th><th>Apr</th><th>May</th><th>Jun</th><th>Jul</th><th>Aug</th><th>Sep</th><th>Oct</th><th>Nov</th><th>Dec</th>
+    </tr>
+  </thead>
+  <tbody>
+  
+    <tr>
+      <td class="row-label">XLK</td>
+      
+      <td style="background:rgba(30,132,73,0.03); color:inherit;">+0.1%</td>
+      
+      <td style="background:rgba(30,132,73,0.17); color:inherit;">+0.7%</td>
+      
+      <td style="background:rgba(30,132,73,0.38); color:inherit;">+1.5%</td>
+      
+      <td style="background:rgba(30,132,73,0.70); color:#ffffff;">+2.8%</td>
+      
+      <td style="background:rgba(30,132,73,0.82); color:#ffffff;">+3.3%</td>
+      
+      <td style="background:rgba(30,132,73,0.21); color:inherit;">+0.9%</td>
+      
+      <td style="background:rgba(30,132,73,0.73); color:#ffffff;">+2.9%</td>
+      
+      <td style="background:rgba(30,132,73,0.24); color:inherit;">+1.0%</td>
+      
+      <td style="background:rgba(192,57,43,0.04); color:inherit;">-0.2%</td>
+      
+      <td style="background:rgba(30,132,73,0.46); color:inherit;">+1.8%</td>
+      
+      <td style="background:rgba(30,132,73,0.49); color:inherit;">+2.0%</td>
+      
+      <td style="background:rgba(30,132,73,0.21); color:inherit;">+0.8%</td>
+      
+    </tr>
+  
+    <tr>
+      <td class="row-label">XLF</td>
+      
+      <td style="background:rgba(192,57,43,0.04); color:inherit;">-0.2%</td>
+      
+      <td style="background:rgba(192,57,43,0.13); color:inherit;">-0.5%</td>
+      
+      <td style="background:rgba(30,132,73,0.05); color:inherit;">+0.2%</td>
+      
+      <td style="background:rgba(30,132,73,0.66); color:#ffffff;">+2.6%</td>
+      
+      <td style="background:rgba(30,132,73,0.03); color:inherit;">+0.1%</td>
+      
+      <td style="background:rgba(192,57,43,0.24); color:inherit;">-1.0%</td>
+      
+      <td style="background:rgba(30,132,73,0.72); color:#ffffff;">+2.9%</td>
+      
+      <td style="background:rgba(30,132,73,0.07); color:inherit;">+0.3%</td>
+      
+      <td style="background:rgba(192,57,43,0.29); color:inherit;">-1.2%</td>
+      
+      <td style="background:rgba(30,132,73,0.26); color:inherit;">+1.0%</td>
+      
+      <td style="background:rgba(30,132,73,0.59); color:#ffffff;">+2.3%</td>
+      
+      <td style="background:rgba(30,132,73,0.26); color:inherit;">+1.0%</td>
+      
+    </tr>
+  
+    <tr>
+      <td class="row-label">XLE</td>
+      
+      <td style="background:rgba(30,132,73,0.33); color:inherit;">+1.3%</td>
+      
+      <td style="background:rgba(30,132,73,0.40); color:inherit;">+1.6%</td>
+      
+      <td style="background:rgba(30,132,73,0.34); color:inherit;">+1.3%</td>
+      
+      <td style="background:rgba(30,132,73,0.86); color:#ffffff;">+3.4%</td>
+      
+      <td style="background:rgba(192,57,43,0.06); color:inherit;">-0.2%</td>
+      
+      <td style="background:rgba(192,57,43,0.02); color:inherit;">-0.1%</td>
+      
+      <td style="background:rgba(30,132,73,0.26); color:inherit;">+1.1%</td>
+      
+      <td style="background:rgba(192,57,43,0.23); color:inherit;">-0.9%</td>
+      
+      <td style="background:rgba(192,57,43,0.19); color:inherit;">-0.8%</td>
+      
+      <td style="background:rgba(30,132,73,0.42); color:inherit;">+1.7%</td>
+      
+      <td style="background:rgba(30,132,73,0.59); color:#ffffff;">+2.3%</td>
+      
+      <td style="background:rgba(192,57,43,0.03); color:inherit;">-0.1%</td>
+      
+    </tr>
+  
+    <tr>
+      <td class="row-label">XLV</td>
+      
+      <td style="background:rgba(30,132,73,0.21); color:inherit;">+0.9%</td>
+      
+      <td style="background:rgba(192,57,43,0.06); color:inherit;">-0.2%</td>
+      
+      <td style="background:rgba(30,132,73,0.21); color:inherit;">+0.8%</td>
+      
+      <td style="background:rgba(30,132,73,0.25); color:inherit;">+1.0%</td>
+      
+      <td style="background:rgba(30,132,73,0.18); color:inherit;">+0.7%</td>
+      
+      <td style="background:rgba(30,132,73,0.31); color:inherit;">+1.2%</td>
+      
+      <td style="background:rgba(30,132,73,0.52); color:inherit;">+2.1%</td>
+      
+      <td style="background:rgba(30,132,73,0.17); color:inherit;">+0.7%</td>
+      
+      <td style="background:rgba(192,57,43,0.10); color:inherit;">-0.4%</td>
+      
+      <td style="background:rgba(30,132,73,0.12); color:inherit;">+0.5%</td>
+      
+      <td style="background:rgba(30,132,73,0.67); color:#ffffff;">+2.7%</td>
+      
+      <td style="background:rgba(30,132,73,0.22); color:inherit;">+0.9%</td>
+      
+    </tr>
+  
+    <tr>
+      <td class="row-label">XLI</td>
+      
+      <td style="background:rgba(30,132,73,0.13); color:inherit;">+0.5%</td>
+      
+      <td style="background:rgba(30,132,73,0.26); color:inherit;">+1.0%</td>
+      
+      <td style="background:rgba(30,132,73,0.19); color:inherit;">+0.8%</td>
+      
+      <td style="background:rgba(30,132,73,0.55); color:#ffffff;">+2.2%</td>
+      
+      <td style="background:rgba(30,132,73,0.12); color:inherit;">+0.5%</td>
+      
+      <td style="background:rgba(192,57,43,0.02); color:inherit;">-0.1%</td>
+      
+      <td style="background:rgba(30,132,73,0.64); color:#ffffff;">+2.6%</td>
+      
+      <td style="background:rgba(192,57,43,0.05); color:inherit;">-0.2%</td>
+      
+      <td style="background:rgba(192,57,43,0.10); color:inherit;">-0.4%</td>
+      
+      <td style="background:rgba(30,132,73,0.24); color:inherit;">+1.0%</td>
+      
+      <td style="background:rgba(30,132,73,0.87); color:#ffffff;">+3.5%</td>
+      
+      <td style="background:rgba(30,132,73,0.15); color:inherit;">+0.6%</td>
+      
+    </tr>
+  
+    <tr>
+      <td class="row-label">XLY</td>
+      
+      <td style="background:rgba(30,132,73,0.20); color:inherit;">+0.8%</td>
+      
+      <td style="background:rgba(192,57,43,0.00); color:inherit;">-0.0%</td>
+      
+      <td style="background:rgba(30,132,73,0.20); color:inherit;">+0.8%</td>
+      
+      <td style="background:rgba(30,132,73,0.78); color:#ffffff;">+3.1%</td>
+      
+      <td style="background:rgba(30,132,73,0.07); color:inherit;">+0.3%</td>
+      
+      <td style="background:rgba(30,132,73,0.03); color:inherit;">+0.1%</td>
+      
+      <td style="background:rgba(30,132,73,0.76); color:#ffffff;">+3.0%</td>
+      
+      <td style="background:rgba(30,132,73,0.16); color:inherit;">+0.6%</td>
+      
+      <td style="background:rgba(192,57,43,0.07); color:inherit;">-0.3%</td>
+      
+      <td style="background:rgba(30,132,73,0.14); color:inherit;">+0.6%</td>
+      
+      <td style="background:rgba(30,132,73,0.68); color:#ffffff;">+2.7%</td>
+      
+      <td style="background:rgba(30,132,73,0.14); color:inherit;">+0.5%</td>
+      
+    </tr>
+  
+    <tr>
+      <td class="row-label">XLP</td>
+      
+      <td style="background:rgba(192,57,43,0.05); color:inherit;">-0.2%</td>
+      
+      <td style="background:rgba(30,132,73,0.16); color:inherit;">+0.6%</td>
+      
+      <td style="background:rgba(30,132,73,0.41); color:inherit;">+1.6%</td>
+      
+      <td style="background:rgba(30,132,73,0.39); color:inherit;">+1.5%</td>
+      
+      <td style="background:rgba(30,132,73,0.00); color:inherit;">+0.0%</td>
+      
+      <td style="background:rgba(30,132,73,0.00); color:inherit;">+0.0%</td>
+      
+      <td style="background:rgba(30,132,73,0.54); color:inherit;">+2.2%</td>
+      
+      <td style="background:rgba(30,132,73,0.08); color:inherit;">+0.3%</td>
+      
+      <td style="background:rgba(192,57,43,0.13); color:inherit;">-0.5%</td>
+      
+      <td style="background:rgba(30,132,73,0.19); color:inherit;">+0.7%</td>
+      
+      <td style="background:rgba(30,132,73,0.55); color:inherit;">+2.2%</td>
+      
+      <td style="background:rgba(30,132,73,0.17); color:inherit;">+0.7%</td>
+      
+    </tr>
+  
+    <tr>
+      <td class="row-label">XLU</td>
+      
+      <td style="background:rgba(30,132,73,0.04); color:inherit;">+0.2%</td>
+      
+      <td style="background:rgba(192,57,43,0.18); color:inherit;">-0.7%</td>
+      
+      <td style="background:rgba(30,132,73,0.66); color:#ffffff;">+2.6%</td>
+      
+      <td style="background:rgba(30,132,73,0.50); color:inherit;">+2.0%</td>
+      
+      <td style="background:rgba(30,132,73,0.09); color:inherit;">+0.3%</td>
+      
+      <td style="background:rgba(30,132,73,0.01); color:inherit;">+0.0%</td>
+      
+      <td style="background:rgba(30,132,73,0.49); color:inherit;">+1.9%</td>
+      
+      <td style="background:rgba(192,57,43,0.05); color:inherit;">-0.2%</td>
+      
+      <td style="background:rgba(192,57,43,0.19); color:inherit;">-0.8%</td>
+      
+      <td style="background:rgba(30,132,73,0.43); color:inherit;">+1.7%</td>
+      
+      <td style="background:rgba(30,132,73,0.23); color:inherit;">+0.9%</td>
+      
+      <td style="background:rgba(30,132,73,0.17); color:inherit;">+0.7%</td>
+      
+    </tr>
+  
+    <tr>
+      <td class="row-label">XLB</td>
+      
+      <td style="background:rgba(192,57,43,0.01); color:inherit;">-0.0%</td>
+      
+      <td style="background:rgba(30,132,73,0.37); color:inherit;">+1.5%</td>
+      
+      <td style="background:rgba(30,132,73,0.33); color:inherit;">+1.3%</td>
+      
+      <td style="background:rgba(30,132,73,0.65); color:#ffffff;">+2.6%</td>
+      
+      <td style="background:rgba(30,132,73,0.09); color:inherit;">+0.4%</td>
+      
+      <td style="background:rgba(192,57,43,0.18); color:inherit;">-0.7%</td>
+      
+      <td style="background:rgba(30,132,73,0.56); color:#ffffff;">+2.3%</td>
+      
+      <td style="background:rgba(192,57,43,0.01); color:inherit;">-0.1%</td>
+      
+      <td style="background:rgba(192,57,43,0.44); color:inherit;">-1.8%</td>
+      
+      <td style="background:rgba(30,132,73,0.21); color:inherit;">+0.8%</td>
+      
+      <td style="background:rgba(30,132,73,0.74); color:#ffffff;">+2.9%</td>
+      
+      <td style="background:rgba(30,132,73,0.16); color:inherit;">+0.6%</td>
+      
+    </tr>
+  
+    <tr>
+      <td class="row-label">XLRE</td>
+      
+      <td style="background:rgba(30,132,73,0.12); color:inherit;">+0.5%</td>
+      
+      <td style="background:rgba(192,57,43,0.08); color:inherit;">-0.3%</td>
+      
+      <td style="background:rgba(30,132,73,0.22); color:inherit;">+0.9%</td>
+      
+      <td style="background:rgba(30,132,73,0.24); color:inherit;">+1.0%</td>
+      
+      <td style="background:rgba(30,132,73,0.11); color:inherit;">+0.4%</td>
+      
+      <td style="background:rgba(30,132,73,0.46); color:inherit;">+1.8%</td>
+      
+      <td style="background:rgba(30,132,73,0.81); color:#ffffff;">+3.2%</td>
+      
+      <td style="background:rgba(30,132,73,0.10); color:inherit;">+0.4%</td>
+      
+      <td style="background:rgba(192,57,43,0.82); color:#ffffff;">-3.3%</td>
+      
+      <td style="background:rgba(192,57,43,0.21); color:inherit;">-0.8%</td>
+      
+      <td style="background:rgba(30,132,73,0.78); color:#ffffff;">+3.1%</td>
+      
+      <td style="background:rgba(30,132,73,0.12); color:inherit;">+0.5%</td>
+      
+    </tr>
+  
+    <tr>
+      <td class="row-label">XLC</td>
+      
+      <td style="background:rgba(30,132,73,1.00); color:#ffffff;">+4.2%</td>
+      
+      <td style="background:rgba(192,57,43,0.22); color:inherit;">-0.9%</td>
+      
+      <td style="background:rgba(192,57,43,0.20); color:inherit;">-0.8%</td>
+      
+      <td style="background:rgba(30,132,73,0.49); color:inherit;">+2.0%</td>
+      
+      <td style="background:rgba(30,132,73,0.65); color:#ffffff;">+2.6%</td>
+      
+      <td style="background:rgba(30,132,73,0.20); color:inherit;">+0.8%</td>
+      
+      <td style="background:rgba(30,132,73,0.56); color:#ffffff;">+2.2%</td>
+      
+      <td style="background:rgba(30,132,73,0.42); color:inherit;">+1.7%</td>
+      
+      <td style="background:rgba(192,57,43,0.46); color:inherit;">-1.8%</td>
+      
+      <td style="background:rgba(192,57,43,0.18); color:inherit;">-0.7%</td>
+      
+      <td style="background:rgba(30,132,73,0.87); color:#ffffff;">+3.5%</td>
+      
+      <td style="background:rgba(192,57,43,0.01); color:inherit;">-0.0%</td>
+      
+    </tr>
+  
+  </tbody>
+</table>
+<div class="legend">Green &gt; 0%, red &lt; 0%. Cells require ≥5 years of history for that month.</div>
+
+<h2 class="section">3-Month Relative Strength vs SPY</h2>
+<div class="rs-bars">
+  
+    <div class="rs-row">
+      <div><b>XLE</b></div>
+      <div class="rs-bar">
+        <div class="axis"></div>
+        
+        <div class="fill pos" style="width: 50.0%;"></div>
+        
+      </div>
+      <div class="num" style="text-align:right;">+16.24%</div>
+    </div>
+  
+    <div class="rs-row">
+      <div><b>XLK</b></div>
+      <div class="rs-bar">
+        <div class="axis"></div>
+        
+        <div class="fill pos" style="width: 19.31788637637179%;"></div>
+        
+      </div>
+      <div class="num" style="text-align:right;">+6.28%</div>
+    </div>
+  
+    <div class="rs-row">
+      <div><b>XLV</b></div>
+      <div class="rs-bar">
+        <div class="axis"></div>
+        
+        <div class="fill pos" style="width: 0.9236063346390316%;"></div>
+        
+      </div>
+      <div class="num" style="text-align:right;">+0.30%</div>
+    </div>
+  
+    <div class="rs-row">
+      <div><b>XLC</b></div>
+      <div class="rs-bar">
+        <div class="axis"></div>
+        
+        <div class="fill neg" style="width: 6.9830707834745%;"></div>
+        
+      </div>
+      <div class="num" style="text-align:right;">-2.27%</div>
+    </div>
+  
+    <div class="rs-row">
+      <div><b>XLP</b></div>
+      <div class="rs-bar">
+        <div class="axis"></div>
+        
+        <div class="fill neg" style="width: 19.434374338732173%;"></div>
+        
+      </div>
+      <div class="num" style="text-align:right;">-6.31%</div>
+    </div>
+  
+    <div class="rs-row">
+      <div><b>XLF</b></div>
+      <div class="rs-bar">
+        <div class="axis"></div>
+        
+        <div class="fill neg" style="width: 21.798308651182534%;"></div>
+        
+      </div>
+      <div class="num" style="text-align:right;">-7.08%</div>
+    </div>
+  
+    <div class="rs-row">
+      <div><b>XLB</b></div>
+      <div class="rs-bar">
+        <div class="axis"></div>
+        
+        <div class="fill neg" style="width: 25.450977722438367%;"></div>
+        
+      </div>
+      <div class="num" style="text-align:right;">-8.27%</div>
+    </div>
+  
+    <div class="rs-row">
+      <div><b>XLY</b></div>
+      <div class="rs-bar">
+        <div class="axis"></div>
+        
+        <div class="fill neg" style="width: 28.463280572821937%;"></div>
+        
+      </div>
+      <div class="num" style="text-align:right;">-9.25%</div>
+    </div>
+  
+    <div class="rs-row">
+      <div><b>XLRE</b></div>
+      <div class="rs-bar">
+        <div class="axis"></div>
+        
+        <div class="fill neg" style="width: 30.105275511811737%;"></div>
+        
+      </div>
+      <div class="num" style="text-align:right;">-9.78%</div>
+    </div>
+  
+    <div class="rs-row">
+      <div><b>XLI</b></div>
+      <div class="rs-bar">
+        <div class="axis"></div>
+        
+        <div class="fill neg" style="width: 33.44369537292228%;"></div>
+        
+      </div>
+      <div class="num" style="text-align:right;">-10.86%</div>
+    </div>
+  
+    <div class="rs-row">
+      <div><b>XLU</b></div>
+      <div class="rs-bar">
+        <div class="axis"></div>
+        
+        <div class="fill neg" style="width: 43.486021196080415%;"></div>
+        
+      </div>
+      <div class="num" style="text-align:right;">-14.13%</div>
+    </div>
+  
+</div>
+
+</div>
+
+<script>
+document.querySelectorAll("#scores th").forEach((th, i) => {
+  th.addEventListener("click", () => {
+    const tbody = th.closest("table").querySelector("tbody");
+    const rows = Array.from(tbody.querySelectorAll("tr"));
+    const isNum = th.dataset.sort === "num";
+    const dir = th.dataset.dir === "asc" ? "desc" : "asc";
+    document.querySelectorAll("#scores th").forEach(t => t.dataset.dir = "");
+    th.dataset.dir = dir;
+    rows.sort((a, b) => {
+      let av = a.children[i].innerText.trim();
+      let bv = b.children[i].innerText.trim();
+      if (isNum) {
+        av = parseFloat(av.replace(/[^0-9.\-]/g, "")) || 0;
+        bv = parseFloat(bv.replace(/[^0-9.\-]/g, "")) || 0;
+        return dir === "asc" ? av - bv : bv - av;
+      }
+      return dir === "asc" ? av.localeCompare(bv) : bv.localeCompare(av);
+    });
+    rows.forEach(r => tbody.appendChild(r));
+  });
+});
+</script>
+
+
+
+<section style="margin-top:2rem;">
+<h2>Drill-Down: XLK (Technology)
+
+  <span class="pill pill-buy" style="font-size:14px; vertical-align:middle; margin-left:8px;">BUY</span>
+
+</h2>
+
+
+<h3 style="margin-top:1rem;">Sub-Sector ETFs <span class="dim">(ranked by composite)</span></h3>
+<table class="data" style="margin-top:.5rem;">
+<thead><tr>
+<th>ETF</th><th>Theme</th><th data-sort="num">Composite</th><th>Signal</th>
+<th data-sort="num">RSI</th><th data-sort="num">vs 20d</th><th data-sort="num">vs 50d</th>
+<th data-sort="num">Vol</th><th>Entry Timing</th>
+</tr></thead>
+<tbody>
+
+<tr>
+<td><strong>CIBR</strong></td>
+<td>Cybersecurity</td>
+<td style="font-weight:600; color:#27ae60;">86.9</td>
+<td><span class="pill pill-buy">Buy</span></td>
+<td>63</td>
+<td>+4.5%</td>
+<td>+7.5%</td>
+<td>1.1x</td>
+<td><span class="pill pill-hold">Reasonable</span></td>
+</tr>
+
+<tr>
+<td><strong>SMH</strong></td>
+<td>Semiconductors</td>
+<td style="font-weight:600; color:#27ae60;">79.9</td>
+<td><span class="pill pill-buy">Buy</span></td>
+<td>69</td>
+<td>+8.0%</td>
+<td>+10.7%</td>
+<td>0.9x</td>
+<td><span class="pill pill-avoid">Extended</span></td>
+</tr>
+
+<tr>
+<td><strong>SKYY</strong></td>
+<td>Cloud Computing</td>
+<td style="font-weight:600; color:inherit;">62.7</td>
+<td><span class="pill pill-hold">Hold</span></td>
+<td>61</td>
+<td>+2.9%</td>
+<td>+5.9%</td>
+<td>0.8x</td>
+<td><span class="pill pill-hold">Reasonable</span></td>
+</tr>
+
+<tr>
+<td><strong>IGV</strong></td>
+<td>Software</td>
+<td style="font-weight:600; color:inherit;">55.3</td>
+<td><span class="pill pill-hold">Hold</span></td>
+<td>59</td>
+<td>+2.9%</td>
+<td>+5.3%</td>
+<td>1.0x</td>
+<td><span class="pill pill-hold">Reasonable</span></td>
+</tr>
+
+<tr>
+<td><strong>FDN</strong></td>
+<td>Internet</td>
+<td style="font-weight:600; color:inherit;">42.1</td>
+<td><span class="pill pill-hold">Hold</span></td>
+<td>54</td>
+<td>+0.6%</td>
+<td>+1.8%</td>
+<td>1.1x</td>
+<td><span class="pill pill-hold">Reasonable</span></td>
+</tr>
+
+<tr>
+<td><strong>BOTZ</strong></td>
+<td>AI & Robotics</td>
+<td style="font-weight:600; color:#c0392b;">38.9</td>
+<td><span class="pill pill-avoid">Avoid</span></td>
+<td>56</td>
+<td>+2.1%</td>
+<td>+0.7%</td>
+<td>0.8x</td>
+<td><span class="pill pill-hold">Reasonable</span></td>
+</tr>
+
+</tbody>
+</table>
+<div class="legend">RSI(14): &lt;30 oversold, &gt;70 overbought. vs 20d/50d: distance from moving average. Vol: 5-day avg volume ÷ 20-day avg (>1 = rising interest).</div>
+
+
+
+<h3 style="margin-top:1.5rem;">Top Holdings in CIBR
+ (Cybersecurity)
+</h3>
+<table class="data" style="margin-top:.5rem;">
+<thead><tr>
+<th>Ticker</th><th>Name</th><th data-sort="num">Weight</th>
+<th data-sort="num">Composite</th><th>Signal</th>
+<th data-sort="num">RSI</th><th data-sort="num">vs 20d</th><th data-sort="num">vs 50d</th>
+<th data-sort="num">Vol</th><th>Entry Timing</th>
+</tr></thead>
+<tbody>
+
+<tr>
+<td><strong>CRWD</strong></td>
+<td>CrowdStrike</td>
+<td>6.5%</td>
+<td style="font-weight:600; color:#27ae60;">99.7</td>
+<td><span class="pill pill-buy">Buy</span></td>
+<td>69</td>
+<td>+11.5%</td>
+<td>+22.9%</td>
+<td>0.7x</td>
+<td><span class="pill pill-avoid">Extended</span></td>
+</tr>
+
+<tr>
+<td><strong>NET</strong></td>
+<td>Cloudflare</td>
+<td>3.0%</td>
+<td style="font-weight:600; color:#27ae60;">94.3</td>
+<td><span class="pill pill-buy">Buy</span></td>
+<td>60</td>
+<td>+4.9%</td>
+<td>+13.4%</td>
+<td>0.8x</td>
+<td><span class="pill pill-hold">Reasonable</span></td>
+</tr>
+
+<tr>
+<td><strong>OKTA</strong></td>
+<td>Okta</td>
+<td>3.0%</td>
+<td style="font-weight:600; color:#27ae60;">93.8</td>
+<td><span class="pill pill-buy">Buy</span></td>
+<td>68</td>
+<td>+10.7%</td>
+<td>+28.4%</td>
+<td>0.8x</td>
+<td><span class="pill pill-avoid">Extended</span></td>
+</tr>
+
+<tr>
+<td><strong>PANW</strong></td>
+<td>Palo Alto Networks</td>
+<td>7.0%</td>
+<td style="font-weight:600; color:#27ae60;">90.7</td>
+<td><span class="pill pill-buy">Buy</span></td>
+<td>63</td>
+<td>+8.7%</td>
+<td>+11.4%</td>
+<td>0.9x</td>
+<td><span class="pill pill-avoid">Extended</span></td>
+</tr>
+
+<tr>
+<td><strong>FTNT</strong></td>
+<td>Fortinet</td>
+<td>5.5%</td>
+<td style="font-weight:600; color:#27ae60;">87.2</td>
+<td><span class="pill pill-buy">Buy</span></td>
+<td>64</td>
+<td>+6.0%</td>
+<td>+10.6%</td>
+<td>0.7x</td>
+<td><span class="pill pill-avoid">Extended</span></td>
+</tr>
+
+<tr>
+<td><strong>ZS</strong></td>
+<td>Zscaler</td>
+<td>5.0%</td>
+<td style="font-weight:600; color:inherit;">58.6</td>
+<td><span class="pill pill-hold">Hold</span></td>
+<td>55</td>
+<td>+2.7%</td>
+<td>+9.8%</td>
+<td>0.6x</td>
+<td><span class="pill pill-hold">Reasonable</span></td>
+</tr>
+
+<tr>
+<td><strong>TENB</strong></td>
+<td>Tenable</td>
+<td>2.0%</td>
+<td style="font-weight:600; color:inherit;">48.9</td>
+<td><span class="pill pill-hold">Hold</span></td>
+<td>55</td>
+<td>+5.1%</td>
+<td>+4.9%</td>
+<td>0.7x</td>
+<td><span class="pill pill-avoid">Extended</span></td>
+</tr>
+
+<tr>
+<td><strong>CSCO</strong></td>
+<td>Cisco Systems</td>
+<td>4.5%</td>
+<td style="font-weight:600; color:#c0392b;">38.0</td>
+<td><span class="pill pill-avoid">Avoid</span></td>
+<td>58</td>
+<td>+3.5%</td>
+<td>+0.5%</td>
+<td>0.9x</td>
+<td><span class="pill pill-hold">Reasonable</span></td>
+</tr>
+
+<tr>
+<td><strong>GEN</strong></td>
+<td>Gen Digital</td>
+<td>3.5%</td>
+<td style="font-weight:600; color:#c0392b;">4.3</td>
+<td><span class="pill pill-avoid">Avoid</span></td>
+<td>28</td>
+<td>-18.3%</td>
+<td>-21.3%</td>
+<td>1.4x</td>
+<td><span class="pill pill-hold">Oversold</span></td>
+</tr>
+
+</tbody>
+</table>
+<div class="legend">RSI(14): &lt;30 oversold, &gt;70 overbought. vs 20d/50d: distance from moving average. Vol: 5-day avg volume ÷ 20-day avg (>1 = rising interest).</div>
+
+</section>
+
+<section style="margin-top:2rem;">
+<h2>Drill-Down: XLC (Communications)
+
+  <span class="pill pill-hold" style="font-size:14px; vertical-align:middle; margin-left:8px;">WATCH</span>
+
+</h2>
+
+
+<h3 style="margin-top:1rem;">Sub-Sector ETFs <span class="dim">(ranked by composite)</span></h3>
+<table class="data" style="margin-top:.5rem;">
+<thead><tr>
+<th>ETF</th><th>Theme</th><th data-sort="num">Composite</th><th>Signal</th>
+<th data-sort="num">RSI</th><th data-sort="num">vs 20d</th><th data-sort="num">vs 50d</th>
+<th data-sort="num">Vol</th><th>Entry Timing</th>
+</tr></thead>
+<tbody>
+
+<tr>
+<td><strong>NERD</strong></td>
+<td>Gaming & Esports</td>
+<td style="font-weight:600; color:inherit;">52.8</td>
+<td><span class="pill pill-hold">Hold</span></td>
+<td>52</td>
+<td>+0.0%</td>
+<td>+0.8%</td>
+<td>0.9x</td>
+<td><span class="pill pill-hold">Reasonable</span></td>
+</tr>
+
+<tr>
+<td><strong>SOCL</strong></td>
+<td>Social Media</td>
+<td style="font-weight:600; color:inherit;">40.3</td>
+<td><span class="pill pill-hold">Hold</span></td>
+<td>41</td>
+<td>-1.7%</td>
+<td>-3.8%</td>
+<td>0.5x</td>
+<td><span class="pill pill-buy">Good entry</span></td>
+</tr>
+
+</tbody>
+</table>
+<div class="legend">RSI(14): &lt;30 oversold, &gt;70 overbought. vs 20d/50d: distance from moving average. Vol: 5-day avg volume ÷ 20-day avg (>1 = rising interest).</div>
+
+
+
+<h3 style="margin-top:1.5rem;">Top Holdings in NERD
+ (Gaming & Esports)
+</h3>
+<table class="data" style="margin-top:.5rem;">
+<thead><tr>
+<th>Ticker</th><th>Name</th><th data-sort="num">Weight</th>
+<th data-sort="num">Composite</th><th>Signal</th>
+<th data-sort="num">RSI</th><th data-sort="num">vs 20d</th><th data-sort="num">vs 50d</th>
+<th data-sort="num">Vol</th><th>Entry Timing</th>
+</tr></thead>
+<tbody>
+
+<tr>
+<td><strong>EA</strong></td>
+<td>Electronic Arts</td>
+<td>7.7%</td>
+<td style="font-weight:600; color:inherit;">nan</td>
+<td><span class="pill pill-hold">Hold</span></td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td><span class="pill pill-hold">—</span></td>
+</tr>
+
+<tr>
+<td><strong>CCOEY</strong></td>
+<td>Capcom</td>
+<td>3.4%</td>
+<td style="font-weight:600; color:#27ae60;">75.1</td>
+<td><span class="pill pill-buy">Buy</span></td>
+<td>58</td>
+<td>+0.8%</td>
+<td>+6.4%</td>
+<td>1.3x</td>
+<td><span class="pill pill-hold">Reasonable</span></td>
+</tr>
+
+<tr>
+<td><strong>U</strong></td>
+<td>Unity Software</td>
+<td>4.3%</td>
+<td style="font-weight:600; color:inherit;">60.1</td>
+<td><span class="pill pill-hold">Hold</span></td>
+<td>57</td>
+<td>+3.1%</td>
+<td>+5.5%</td>
+<td>1.0x</td>
+<td><span class="pill pill-hold">Reasonable</span></td>
+</tr>
+
+<tr>
+<td><strong>NCBDY</strong></td>
+<td>Bandai Namco</td>
+<td>4.0%</td>
+<td style="font-weight:600; color:inherit;">55.5</td>
+<td><span class="pill pill-hold">Hold</span></td>
+<td>63</td>
+<td>+3.8%</td>
+<td>+9.9%</td>
+<td>2.1x</td>
+<td><span class="pill pill-hold">Reasonable</span></td>
+</tr>
+
+<tr>
+<td><strong>NTES</strong></td>
+<td>NetEase</td>
+<td>10.8%</td>
+<td style="font-weight:600; color:inherit;">50.3</td>
+<td><span class="pill pill-hold">Hold</span></td>
+<td>45</td>
+<td>-0.8%</td>
+<td>-4.3%</td>
+<td>1.2x</td>
+<td><span class="pill pill-buy">Good entry</span></td>
+</tr>
+
+<tr>
+<td><strong>KONMY</strong></td>
+<td>Konami</td>
+<td>4.4%</td>
+<td style="font-weight:600; color:inherit;">45.9</td>
+<td><span class="pill pill-hold">Hold</span></td>
+<td>62</td>
+<td>+6.0%</td>
+<td>+5.9%</td>
+<td>0.2x</td>
+<td><span class="pill pill-avoid">Extended</span></td>
+</tr>
+
+<tr>
+<td><strong>TTWO</strong></td>
+<td>Take-Two Interactive</td>
+<td>7.4%</td>
+<td style="font-weight:600; color:inherit;">40.6</td>
+<td><span class="pill pill-hold">Hold</span></td>
+<td>37</td>
+<td>-3.0%</td>
+<td>-10.4%</td>
+<td>0.9x</td>
+<td><span class="pill pill-buy">Good entry</span></td>
+</tr>
+
+<tr>
+<td><strong>NEXOY</strong></td>
+<td>Nexon</td>
+<td>4.5%</td>
+<td style="font-weight:600; color:#c0392b;">26.5</td>
+<td><span class="pill pill-avoid">Avoid</span></td>
+<td>35</td>
+<td>-12.5%</td>
+<td>-7.3%</td>
+<td>1.3x</td>
+<td><span class="pill pill-hold">Oversold</span></td>
+</tr>
+
+<tr>
+<td><strong>RBLX</strong></td>
+<td>Roblox</td>
+<td>8.3%</td>
+<td style="font-weight:600; color:#c0392b;">24.3</td>
+<td><span class="pill pill-avoid">Avoid</span></td>
+<td>49</td>
+<td>-4.6%</td>
+<td>+4.0%</td>
+<td>1.2x</td>
+<td><span class="pill pill-buy">Good entry</span></td>
+</tr>
+
+<tr>
+<td><strong>NTDOY</strong></td>
+<td>Nintendo</td>
+<td>10.8%</td>
+<td style="font-weight:600; color:#c0392b;">22.2</td>
+<td><span class="pill pill-avoid">Avoid</span></td>
+<td>38</td>
+<td>-4.5%</td>
+<td>-4.6%</td>
+<td>0.7x</td>
+<td><span class="pill pill-buy">Good entry</span></td>
+</tr>
+
+</tbody>
+</table>
+<div class="legend">RSI(14): &lt;30 oversold, &gt;70 overbought. vs 20d/50d: distance from moving average. Vol: 5-day avg volume ÷ 20-day avg (>1 = rising interest).</div>
+
+</section>
+
+
+
+<footer>
+  <div class="sitelinks"><a href="https://brianbeals.com">brianbeals.com</a> &middot;
+    <a href="https://brianbeals.com/writing">Writing</a> &middot;
+    <a href="https://weather.brianbeals.com">Marine Forecast</a> &middot;
+    <a href="https://github.com/brianbeals/sector-rotation-screener">GitHub</a></div>
+  <div class="byline"><svg viewBox="0 0 32 32" width="16" height="16" aria-label="Brian Beals"><rect width="32" height="32" rx="6" fill="#1E3A5F"/><text x="16" y="15" text-anchor="middle" dominant-baseline="central" fill="#fff" font-family="-apple-system,system-ui,sans-serif" font-size="16" font-weight="800" letter-spacing="-0.04em">BB</text></svg>&copy; Brian Beals &middot; brianbeals.com &middot; October 04, 2026</div>
+  <div style="margin-top:8px;">Price data through 2026-10-02 &middot; FRED vintage 2026-10-01</div>
+</footer>
+
+</body>
+</html>
