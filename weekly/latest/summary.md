@@ -1,4 +1,4 @@
-# Weekly Sector Rotation Commentary: 2026-10-18
+# Weekly Sector Rotation Commentary: 2026-10-25
 
 **⚠️ Not financial advice.** This commentary is auto-generated each week by Anthropic's Claude (an AI model). Brian Beals is not a registered investment advisor, and Anthropic's Claude is not licensed to provide personalized financial advice. The screener is a research and methodology demo, not a recommendation system. Past performance does not predict future results. Do your own research before making any investment decisions.
 
@@ -8,23 +8,23 @@
 
 ## What the screen said this week
 
-The screen classified the current environment as mid-cycle, driven by industrial production (INDPRO) growing at +2.2% year over year, which sits inside the 0.0% to 4.0% band the rule set treats as steady expansion. The yield curve reading of +0.33 (a positive spread, meaning longer-term rates are above shorter-term rates) reinforced that classification. In plain terms, the macro inputs this week pointed to ongoing, unremarkable growth rather than acceleration or contraction.
+The screen classifies the current environment as mid-cycle. That label comes from industrial production (INDPRO) growing at +2.2% year over year, which sits inside the 0.0% to 4.0% band the rule set reads as steady expansion, combined with a positive yield curve of +0.31 (the gap between longer and shorter term rates, where positive is typically read as non-recessionary). Together these are interpreted as ongoing, unremarkable growth.
 
-On the composite scale (0 to 100, blending seasonality, cycle fit, and relative strength), Technology (XLK) topped the list at 71.9, pulled up by a maximum cycle fit score of 100 and decent seasonality, even though its relative strength (how it has traded versus peers recently) was soft at 43.7. Energy (XLE) was the only sector carrying a Buy signal this week at 67.9, and its profile was different: a mid-range cycle fit of 50 but the strongest relative strength in the group at 88.7, with a 3-month relative move of +15.37%. Energy's Buy flag is an output of this rule set crossing its 65 threshold, not a recommendation.
+On the composite scale (0 to 100), Energy (XLE) topped the ranking at 70.8, the only sector to clear the Buy threshold of 65. Its score was driven mostly by very strong relative strength (RS of 96.5, with 3-month relative performance of +16.42%) plus decent seasonality, despite only a middling cycle-fit score. Technology (XLK) placed second at 69.2 on a perfect cycle-fit score of 100, but it carries a Watch flag rather than a Buy because its relative strength (36.2) is below the confirmation line. Financials and Healthcare rounded out the upper group, both on Hold.
 
-Technology and Communications (XLC) both registered Watch signals, meaning the cycle component favors them (cycle fit at or above 80) but relative strength has not yet confirmed. No sector hit the Avoid threshold of 40 or below. Real Estate (XLRE) ranked last at 43.4.
+Communications (XLC) is the other Watch, also cycle-favored at 100 but with very weak relative strength (13.1) and a thin-sample seasonality note. No sector fell to the Avoid threshold of 40 this week.
 
 ## Things worth noticing
 
-There is a visible split between cycle-favored names and price action. XLK and XLC both scored 100 on cycle fit yet sat below 45 on relative strength, which is precisely what produces a Watch rather than a Buy under these thresholds. Energy shows the mirror image: strong recent relative strength but only middling cycle fit.
+Energy and Technology illustrate opposite profiles. Energy leads on price momentum while its cycle fit is only average, whereas Technology is maximally cycle-favored but has not yet shown the relative strength the rule set wants before escalating to Buy. That gap is exactly what the Watch label is designed to flag.
 
-The Communications seasonality score of 40.9 carries a "thin sample" tag. That is a reminder that this sector's seasonal history offers fewer observations, so that one input deserves less weight than the others.
+Worth reading carefully: the XLC seasonality score (36.5) is marked thin sample, meaning the seasonal history behind it is limited, so that component deserves less weight in your interpretation than a well-populated one.
 
-Several middle-ranked sectors clustered near 51 to 55 with negative 3-month relative moves, including Industrials, Utilities, and Real Estate, which shows how little separated the pack outside the top two this week.
+Also notice the signal-quality numbers. Across 1150 Buy calls over 670 weeks, Buy-signal forward returns averaged +1.72% versus SPY +1.66%, an excess of only +0.06%, beating SPY 51% of the time. That is a thin edge, useful context for how much any single Buy label should carry.
 
 ## Methodology reminder
 
-The composite is the weighted sum named above: Seasonality 25%, Cycle Fit 40%, and Relative Strength 35%. Lookahead bias in the backtest is controlled using FRED ALFRED vintages, meaning each historical date only sees the macro data that was actually published at that time. The backtest figure (+743.00% versus SPY +650.81% since May 2011) is a property of this specific rule set over that window, not a forecast of future results.
+The composite is the weighted sum named above: Seasonality 25% plus Cycle Fit 40% plus Relative Strength 35%. Lookahead bias in the backtest is controlled using FRED ALFRED data vintages, so each week sees only data that was actually available then. The backtest result (Strategy +743.00% vs SPY +650.81% since May 2011) is a property of this specific rule set, not a forecast of anything.
 
 ---
 
