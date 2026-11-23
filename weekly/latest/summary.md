@@ -1,4 +1,4 @@
-# Weekly Sector Rotation Commentary: 2026-11-16
+# Weekly Sector Rotation Commentary: 2026-11-23
 
 **⚠️ Not financial advice.** This commentary is auto-generated each week by Anthropic's Claude (an AI model). Brian Beals is not a registered investment advisor, and Anthropic's Claude is not licensed to provide personalized financial advice. The screener is a research and methodology demo, not a recommendation system. Past performance does not predict future results. Do your own research before making any investment decisions.
 
@@ -8,23 +8,23 @@
 
 ## What the screen said this week
 
-The screen classified the current environment as mid-cycle, driven by industrial production (INDPRO) running at +2.2% year over year, which sits inside the 0.0% to 4.0% band the rule set treats as steady expansion. The yield curve reading of +0.24 (the spread between longer and shorter rates) reinforced that classification. In plain terms, the macro inputs point to an economy still growing rather than peaking or contracting, at least as of the November 12 data vintage.
+The screen classified the current environment as mid-cycle. That label comes from industrial production (INDPRO) growing +2.1% year over year, which sits inside the 0.0% to 4.0% band the rule set treats as steady expansion, combined with a positive yield curve of +0.28 (longer-term rates above shorter-term rates). Together these are read as ongoing, unhurried growth rather than early recovery or late-cycle stress.
 
-Communications (XLC) topped the composite at 79.1, carried almost entirely by a maxed-out cycle fit score of 100 and strong seasonality, though that seasonality reading is flagged as a thin sample, meaning it rests on relatively few historical observations. Financials (XLF), Consumer Discretionary (XLY), and Materials (XLB) followed, each combining solid seasonality with high relative strength (RS), which measures recent price performance versus the broad market. Seven sectors carried a Buy signal this week, meaning their composite cleared the 65 threshold.
+Three sectors cleared the Buy threshold of 65 on the composite this week: Communications (XLC, 83.1), Real Estate (XLRE, 67.4), and Consumer Discretionary (XLY, 65.1). XLC's score leaned heavily on a maxed-out cycle-fit reading of 100 plus strong seasonality, though its seasonality sample is flagged thin. XLRE and XLY reached Buy more through a blend of solid seasonality and firm relative strength (RS, how a sector is trading versus the broad market) rather than cycle fit, both of which scored a middling 50.
 
-Technology (XLK) drew a Watch signal: its cycle fit is a perfect 100, but its relative strength of 13.0 is very low, so the rule set is waiting for price action to confirm before it would flag a Buy. No sector triggered an Avoid (composite at or below 40) this week.
+Technology (XLK) drew a Watch signal, meaning the cycle strongly favors it (cycle fit 100) but its relative strength has not confirmed (RS 19.9, with a 3-month RS of -7.72%). The rule set holds off on a Buy until price action catches up. No sector fell to the Avoid threshold of 40 or below this week.
 
 ## Things worth noticing
 
-Technology is the clearest divergence in the table. The cycle framework favors it strongly, yet its RS of 13.0 and three-month relative return of -8.30% show price action has not cooperated. Industrials shows a milder version of the same split: strong seasonality (86.4) but a negative three-month RS, landing it on Hold.
+There is a visible split between what the cycle rule favors and what price is doing. XLK is the clearest example: top-ranked cycle fit paired with the weakest RS on the board. The Watch flag exists precisely to surface that kind of divergence rather than act on it.
 
-The opposite pattern appears in Healthcare (XLV) and Consumer Staples (XLP), both of which post very high RS (92.6 and 89.7) and strong recent returns despite below-average cycle fit of 35. They still cleared the Buy threshold because relative strength and seasonality carried the weighted total.
+The opposite pattern shows up lower in the table. Consumer Staples (XLP, +13.55% 3-month RS) and Healthcare (XLV, +11.27%) posted the strongest recent price momentum, yet both carry low cycle-fit scores of 35, which caps their composites and keeps them at Hold.
 
-Worth repeating: the XLC seasonality score is explicitly thin-sample, so weight it accordingly when reading that top ranking.
+Worth a caution flag: XLC's high seasonality score is marked thin sample, meaning fewer historical observations sit behind it, so that component deserves less weight than its number suggests. Also note the signal-quality stats: across 1156 Buy calls, the excess return over SPY was a slim +0.03%, and Buy sectors beat SPY only 51% of the time.
 
 ## Methodology reminder
 
-The composite is the weighted sum of Seasonality (25%), Cycle Fit (40%), and Relative Strength (35%). Lookahead bias in the backtest is controlled using FRED ALFRED point-in-time vintages, so the strategy only sees macro data as it existed at each historical date. The backtest outperformance since May 2011 is a property of this specific rule set over that window, not a forecast of future results.
+The composite is the weighted sum named above: Seasonality 25%, Cycle Fit 40%, and Relative Strength 35%. Lookahead bias in the backtest is controlled using FRED ALFRED data vintages, so each week sees only the macro data that was actually published at that time. The backtest result since May 2011 is a property of this specific rule set, not a forecast of future results.
 
 ---
 
